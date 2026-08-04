@@ -68,5 +68,6 @@ class GlassCard extends TCard {
     super.glowColor,
     super.borderRadius,
     super.onTap,
+    super.border,
   });
 }

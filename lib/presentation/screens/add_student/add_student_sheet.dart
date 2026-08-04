@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
 import '../../../core/extensions/context_ext.dart';
 import '../../../core/theme/color_tokens.dart';
 import '../../../core/haptics/haptic_service.dart';
-import '../../../data/models/student.dart';
 import '../../providers/student_provider.dart';
 
 class AddStudentSheet extends ConsumerStatefulWidget {
@@ -182,16 +180,18 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     HapticService.medium();
-    final student = Student(
-      id: const Uuid().v4(),
-      name: _nameCtrl.text.trim(),
-      subject: _subjectCtrl.text.trim().isEmpty ? null : _subjectCtrl.text.trim(),
-      monthlyFee: double.parse(_feeCtrl.text),
+    final name = _nameCtrl.text.trim();
+    final subject = _subjectCtrl.text.trim().isEmpty ? null : _subjectCtrl.text.trim();
+    final fee = double.parse(_feeCtrl.text);
+    final colorVal = AppColors.avatarPalette[_selectedColorIndex].toARGB32();
+
+    await ref.read(studentsProvider.notifier).addStudent(
+      name: name,
+      monthlyFee: fee,
       targetClasses: _targetClasses.toInt(),
-      avatarColorValue: AppColors.avatarPalette[_selectedColorIndex].toARGB32(),
-      createdAt: DateTime.now().toIso8601String(),
+      avatarColorValue: colorVal,
+      subject: subject,
     );
-    await ref.read(studentsProvider.notifier).addStudent(student);
     if (mounted) Navigator.pop(context);
   }
 }
