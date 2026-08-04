@@ -5,23 +5,19 @@ import 'color_tokens.dart';
 class AppTheme {
   AppTheme._();
 
-  // ── Dark Theme ─────────────────────────────────────────────────────────────
   static ThemeData get dark {
-    const colorScheme = ColorScheme.dark(
-      brightness: Brightness.dark,
-      primary: AppColors.darkAccentGreen,
-      secondary: AppColors.darkAccentBlue,
-      surface: AppColors.darkSurface,
-      onSurface: AppColors.darkTextPrimary,
-      onPrimary: Colors.white,
-      error: AppColors.error,
-    );
-
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColors.darkBackground,
-      colorScheme: colorScheme,
+      colorScheme: const ColorScheme.dark(
+        primary: AppColors.darkAccent,
+        secondary: AppColors.darkAccentGreen,
+        surface: AppColors.darkSurface,
+        onSurface: AppColors.darkTextPrimary,
+        onPrimary: Colors.white,
+        error: AppColors.error,
+      ),
       textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
         bodyColor: AppColors.darkTextPrimary,
         displayColor: AppColors.darkTextPrimary,
@@ -31,25 +27,21 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: AppColors.darkBorder, width: 1),
+          side: const BorderSide(color: AppColors.darkBorder),
         ),
       ),
       dividerColor: AppColors.darkDivider,
-      iconTheme: const IconThemeData(color: AppColors.darkTextSecondary),
+      iconTheme: const IconThemeData(color: AppColors.darkTextSecondary, size: 20),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: AppColors.darkTextPrimary,
         centerTitle: false,
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.darkAccentGreen,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.darkSurface,
+        fillColor: AppColors.darkElevated,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.darkBorder),
@@ -60,57 +52,56 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide:
-              const BorderSide(color: AppColors.darkAccentGreen, width: 1.5),
+          borderSide: const BorderSide(color: AppColors.darkAccent, width: 1.5),
         ),
-        labelStyle: const TextStyle(color: AppColors.darkTextSecondary),
-        hintStyle: const TextStyle(color: AppColors.darkTextSecondary),
+        hintStyle: const TextStyle(color: AppColors.darkTextSecondary, fontSize: 14),
+        prefixIconColor: AppColors.darkTextSecondary,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.darkAccentGreen,
+          backgroundColor: AppColors.darkAccent,
           foregroundColor: Colors.white,
           minimumSize: const Size(double.infinity, 52),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           elevation: 0,
-          textStyle:
-              GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
+          textStyle: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
         ),
       ),
       sliderTheme: const SliderThemeData(
-        activeTrackColor: AppColors.darkAccentGreen,
-        thumbColor: AppColors.darkAccentGreen,
+        activeTrackColor: AppColors.darkAccent,
+        thumbColor: AppColors.darkAccent,
         inactiveTrackColor: AppColors.darkBorder,
-        overlayColor: AppColors.darkCardGlow,
+        overlayColor: Color(0x22A78BFA),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.darkElevated,
+        side: const BorderSide(color: AppColors.darkBorder),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        labelStyle: const TextStyle(color: AppColors.darkTextPrimary, fontSize: 12),
       ),
       extensions: const <ThemeExtension<dynamic>>[
         AppThemeExtension(
-          glassBlur: 12.0,
+          glassBlur: 10.0,
           accentGlow: true,
-          cardGlowColor: AppColors.darkCardGlow,
+          cardGlowColor: Color(0x18A78BFA),
         ),
       ],
     );
   }
 
-  // ── Light Theme ────────────────────────────────────────────────────────────
   static ThemeData get light {
-    const colorScheme = ColorScheme.light(
-      brightness: Brightness.light,
-      primary: AppColors.lightAccentGreen,
-      secondary: AppColors.lightAccentBlue,
-      surface: AppColors.lightSurface,
-      onSurface: AppColors.lightTextPrimary,
-      onPrimary: Colors.white,
-      error: AppColors.error,
-    );
-
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
       scaffoldBackgroundColor: AppColors.lightBackground,
-      colorScheme: colorScheme,
+      colorScheme: const ColorScheme.light(
+        primary: AppColors.lightAccent,
+        secondary: AppColors.lightAccentGreen,
+        surface: AppColors.lightSurface,
+        onSurface: AppColors.lightTextPrimary,
+        onPrimary: Colors.white,
+        error: AppColors.error,
+      ),
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme).apply(
         bodyColor: AppColors.lightTextPrimary,
         displayColor: AppColors.lightTextPrimary,
@@ -120,25 +111,21 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: AppColors.lightBorder, width: 1),
+          side: const BorderSide(color: AppColors.lightBorder),
         ),
       ),
       dividerColor: AppColors.lightDivider,
-      iconTheme: const IconThemeData(color: AppColors.lightTextSecondary),
+      iconTheme: const IconThemeData(color: AppColors.lightTextSecondary, size: 20),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: AppColors.lightTextPrimary,
         centerTitle: false,
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.lightAccentGreen,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.lightSurface,
+        fillColor: AppColors.lightElevated,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.lightBorder),
@@ -149,33 +136,36 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide:
-              const BorderSide(color: AppColors.lightAccentGreen, width: 1.5),
+          borderSide: const BorderSide(color: AppColors.lightAccent, width: 1.5),
         ),
-        labelStyle: const TextStyle(color: AppColors.lightTextSecondary),
-        hintStyle: const TextStyle(color: AppColors.lightTextSecondary),
+        hintStyle: const TextStyle(color: AppColors.lightTextSecondary, fontSize: 14),
+        prefixIconColor: AppColors.lightTextSecondary,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.lightAccentGreen,
+          backgroundColor: AppColors.lightAccent,
           foregroundColor: Colors.white,
           minimumSize: const Size(double.infinity, 52),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           elevation: 0,
-          textStyle:
-              GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
+          textStyle: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
         ),
       ),
       sliderTheme: const SliderThemeData(
-        activeTrackColor: AppColors.lightAccentGreen,
-        thumbColor: AppColors.lightAccentGreen,
+        activeTrackColor: AppColors.lightAccent,
+        thumbColor: AppColors.lightAccent,
         inactiveTrackColor: AppColors.lightBorder,
-        overlayColor: Color(0x1F059669),
+        overlayColor: Color(0x227C3AED),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.lightElevated,
+        side: const BorderSide(color: AppColors.lightBorder),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        labelStyle: const TextStyle(color: AppColors.lightTextPrimary, fontSize: 12),
       ),
       extensions: const <ThemeExtension<dynamic>>[
         AppThemeExtension(
-          glassBlur: 6.0,
+          glassBlur: 0,
           accentGlow: false,
           cardGlowColor: Colors.transparent,
         ),
@@ -184,7 +174,6 @@ class AppTheme {
   }
 }
 
-// Custom theme extension to pass glassmorphic blur and glow settings
 @immutable
 class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
   const AppThemeExtension({
@@ -198,8 +187,7 @@ class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
   final Color cardGlowColor;
 
   @override
-  AppThemeExtension copyWith(
-      {double? glassBlur, bool? accentGlow, Color? cardGlowColor}) {
+  AppThemeExtension copyWith({double? glassBlur, bool? accentGlow, Color? cardGlowColor}) {
     return AppThemeExtension(
       glassBlur: glassBlur ?? this.glassBlur,
       accentGlow: accentGlow ?? this.accentGlow,
@@ -211,14 +199,11 @@ class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
   AppThemeExtension lerp(AppThemeExtension? other, double t) {
     if (other == null) return this;
     return AppThemeExtension(
-      glassBlur: lerpDouble(glassBlur, other.glassBlur, t)!,
+      glassBlur: lerpDouble(glassBlur, other.glassBlur, t) ?? glassBlur,
       accentGlow: t < 0.5 ? accentGlow : other.accentGlow,
       cardGlowColor: Color.lerp(cardGlowColor, other.cardGlowColor, t)!,
     );
   }
 }
 
-double? lerpDouble(double? a, double? b, double t) {
-  if (a == null && b == null) return null;
-  return (a ?? 0) + ((b ?? 0) - (a ?? 0)) * t;
-}
+double lerpDouble(double a, double b, double t) => a + (b - a) * t;

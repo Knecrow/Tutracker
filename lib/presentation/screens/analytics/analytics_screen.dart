@@ -2,11 +2,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/extensions/context_ext.dart';
-import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/color_tokens.dart';
 import '../../providers/analytics_provider.dart';
-import '../../widgets/glass_card.dart';
 import '../../providers/settings_provider.dart';
+import '../../widgets/glass_card.dart';
 
 class AnalyticsScreen extends ConsumerWidget {
   const AnalyticsScreen({super.key});
@@ -15,6 +14,9 @@ class AnalyticsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final analytics = ref.watch(analyticsProvider);
     final settings = ref.watch(settingsProvider);
+    final sym = settings.currencySymbol;
+    final accent = context.accent;
+    final green = context.accentGreen;
 
     return Scaffold(
       backgroundColor: context.background,
@@ -25,105 +27,82 @@ class AnalyticsScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ── Header ──────────────────────────────────────────────────
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
-                child: Text(
-                  'Insights',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: context.primaryText,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                child: Text(
-                  'Your teaching performance at a glance',
-                  style: TextStyle(fontSize: 13, color: context.secondaryText),
-                ),
-              ),
-
-              // ── Summary Badges ───────────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                child: Row(
-                  children: [
-                    _SummaryBadge(
-                      label: 'Pending',
-                      value: '${settings.currencySymbol}${analytics.totalPendingEarnings.toStringAsFixed(0)}',
-                      color: context.accent,
-                    ),
-                    const SizedBox(width: 12),
-                    _SummaryBadge(
-                      label: 'Lifetime',
-                      value: '${settings.currencySymbol}${analytics.lifetimeEarnings.toStringAsFixed(0)}',
-                      color: context.accentBlue,
-                    ),
-                  ],
-                ),
-              ),
-
-              // ── Area Chart: Monthly Earnings ─────────────────────────────
-              GlassCard(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const _ChartTitle(
-                      title: 'Monthly Earnings',
-                      subtitle: 'Last 6 months (archived cycles)',
-                      icon: Icons.trending_up_rounded,
-                    ),
+                    Text('Insights',
+                        style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800,
+                            color: context.primaryText, letterSpacing: -0.8)),
+                    const SizedBox(height: 4),
+                    Text('Your teaching analytics', style: TextStyle(fontSize: 13, color: context.secondaryText)),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      height: 180,
-                      child: analytics.earningsTrend.isEmpty ||
-                              analytics.earningsTrend
-                                  .every((s) => s.y == 0)
-                          ? const _EmptyChart('No archived cycles yet')
-                          : LineChart(_buildAreaChart(
-                              context, analytics, settings.currencySymbol)),
+                    // Big numbers row
+                    Row(
+                      children: [
+                        _BigStat(label: 'Pending', value: '$sym${analytics.totalPendingEarnings.toStringAsFixed(0)}', color: accent),
+                        const SizedBox(width: 12),
+                        _BigStat(label: 'Lifetime', value: '$sym${analytics.lifetimeEarnings.toStringAsFixed(0)}', color: green),
+                        const SizedBox(width: 12),
+                        _BigStat(label: 'This month', value: '${analytics.totalClassesThisMonth}', color: context.accentBlue, suffix: 'classes'),
+                      ],
                     ),
                   ],
                 ),
               ),
 
-              // ── Bar Chart: Weekly Workload ────────────────────────────────
+              // ── Earnings Trend ───────────────────────────────────────────
               GlassCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const _ChartTitle(
-                      title: 'Weekly Workload',
-                      subtitle: 'Classes taught this month',
-                      icon: Icons.bar_chart_rounded,
-                    ),
+                    _SectionLabel('Monthly Earnings', Icons.trending_up_rounded, accent),
+                    const SizedBox(height: 4),
+                    Text('Last 6 months', style: TextStyle(fontSize: 11, color: context.secondaryText)),
                     const SizedBox(height: 20),
                     SizedBox(
                       height: 160,
-                      child: analytics.weeklyBars.isEmpty
-                          ? const _EmptyChart('No classes logged this month')
-                          : BarChart(_buildBarChart(context, analytics)),
+                      child: analytics.earningsTrend.every((s) => s.y == 0)
+                          ? _EmptyChart('No archived cycles yet')
+                          : LineChart(_lineChart(context, analytics, sym)),
                     ),
                   ],
                 ),
               ),
 
-              // ── Donut Rings: Target Completion ───────────────────────────
+              // ── Weekly Bars ──────────────────────────────────────────────
               GlassCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const _ChartTitle(
-                      title: 'Target Completion',
-                      subtitle: 'Progress per student this cycle',
-                      icon: Icons.donut_large_rounded,
-                    ),
+                    _SectionLabel('Weekly Classes', Icons.bar_chart_rounded, green),
+                    const SizedBox(height: 4),
+                    Text('Current month', style: TextStyle(fontSize: 11, color: context.secondaryText)),
                     const SizedBox(height: 20),
+                    SizedBox(
+                      height: 140,
+                      child: analytics.weeklyBars.isEmpty
+                          ? _EmptyChart('No classes logged this month')
+                          : BarChart(_barChart(context, analytics)),
+                    ),
+                  ],
+                ),
+              ),
+
+              // ── Progress Rings ───────────────────────────────────────────
+              GlassCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _SectionLabel('Target Progress', Icons.donut_large_rounded, context.accentBlue),
+                    const SizedBox(height: 4),
+                    Text('Cycle completion per student', style: TextStyle(fontSize: 11, color: context.secondaryText)),
+                    const SizedBox(height: 16),
                     analytics.donutEntries.isEmpty
-                        ? const _EmptyChart('Add students to see progress')
-                        : _DonutRings(entries: analytics.donutEntries),
+                        ? _EmptyChart('Add students to track progress')
+                        : _ProgressList(entries: analytics.donutEntries),
                   ],
                 ),
               ),
@@ -134,53 +113,24 @@ class AnalyticsScreen extends ConsumerWidget {
     );
   }
 
-  LineChartData _buildAreaChart(
-      BuildContext context, AnalyticsData data, String currencySymbol) {
+  LineChartData _lineChart(BuildContext context, AnalyticsData data, String sym) {
     final accent = context.accent;
-    final isDark = context.isDark;
-
     return LineChartData(
-      gridData: FlGridData(
-        show: true,
-        drawVerticalLine: false,
-        getDrawingHorizontalLine: (_) => FlLine(
-          color: context.borderColor,
-          strokeWidth: 1,
-        ),
-      ),
+      gridData: FlGridData(show: true, drawVerticalLine: false,
+          getDrawingHorizontalLine: (_) => FlLine(color: context.borderColor, strokeWidth: 1)),
       titlesData: FlTitlesData(
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        rightTitles:
-            const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 44,
-            getTitlesWidget: (val, _) => Text(
-              '$currencySymbol${val.toInt()}',
-              style: TextStyle(fontSize: 9, color: context.secondaryText),
-            ),
-          ),
-        ),
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: (val, _) {
-              final i = val.toInt();
-              if (i < 0 || i >= data.trendMonthLabels.length) {
-                return const SizedBox.shrink();
-              }
-              return Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  data.trendMonthLabels[i].split(' ').first,
-                  style:
-                      TextStyle(fontSize: 9, color: context.secondaryText),
-                ),
-              );
-            },
-          ),
-        ),
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 40,
+            getTitlesWidget: (v, _) => Text('$sym${v.toInt()}', style: TextStyle(fontSize: 9, color: context.secondaryText)))),
+        bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true,
+            getTitlesWidget: (v, _) {
+              final i = v.toInt();
+              if (i < 0 || i >= data.trendMonthLabels.length) return const SizedBox.shrink();
+              return Padding(padding: const EdgeInsets.only(top: 4),
+                  child: Text(data.trendMonthLabels[i].split(' ').first,
+                      style: TextStyle(fontSize: 9, color: context.secondaryText)));
+            })),
       ),
       borderData: FlBorderData(show: false),
       lineBarsData: [
@@ -189,140 +139,76 @@ class AnalyticsScreen extends ConsumerWidget {
           isCurved: true,
           color: accent,
           barWidth: 2.5,
-          dotData: FlDotData(
-            show: true,
-            getDotPainter: (_, __, ___, ____) => FlDotCirclePainter(
-              radius: 4,
-              color: accent,
-              strokeWidth: 2,
-              strokeColor:
-                  isDark ? AppColors.darkBackground : Colors.white,
-            ),
-          ),
-          belowBarData: BarAreaData(
-            show: true,
-            gradient: LinearGradient(
-              colors: [
-                accent.withValues(alpha: isDark ? 0.3 : 0.15),
-                accent.withValues(alpha: 0.0),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+          dotData: FlDotData(show: true,
+              getDotPainter: (_, __, ___, ____) => FlDotCirclePainter(radius: 3.5, color: accent,
+                  strokeWidth: 2, strokeColor: context.background)),
+          belowBarData: BarAreaData(show: true,
+              gradient: LinearGradient(colors: [accent.withValues(alpha: 0.2), Colors.transparent],
+                  begin: Alignment.topCenter, end: Alignment.bottomCenter)),
         ),
       ],
       lineTouchData: LineTouchData(
         touchTooltipData: LineTouchTooltipData(
-          getTooltipColor: (_) =>
-              context.isDark ? AppColors.darkSurface : Colors.white,
-          getTooltipItems: (spots) => spots
-              .map((s) => LineTooltipItem(
-                    '$currencySymbol${s.y.toStringAsFixed(0)}',
-                    TextStyle(
-                      color: accent,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12,
-                    ),
-                  ))
-              .toList(),
+          getTooltipColor: (_) => context.surface,
+          getTooltipItems: (spots) => spots.map((s) =>
+              LineTooltipItem('$sym${s.y.toStringAsFixed(0)}',
+                  TextStyle(color: accent, fontWeight: FontWeight.w700, fontSize: 12))).toList(),
         ),
       ),
     );
   }
 
-  BarChartData _buildBarChart(BuildContext context, AnalyticsData data) {
+  BarChartData _barChart(BuildContext context, AnalyticsData data) {
     return BarChartData(
-      gridData: FlGridData(
-        show: true,
-        drawVerticalLine: false,
-        getDrawingHorizontalLine: (_) => FlLine(
-          color: context.borderColor,
-          strokeWidth: 1,
-        ),
-      ),
+      gridData: FlGridData(show: true, drawVerticalLine: false,
+          getDrawingHorizontalLine: (_) => FlLine(color: context.borderColor, strokeWidth: 1)),
       titlesData: FlTitlesData(
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        rightTitles:
-            const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 28,
-            getTitlesWidget: (val, _) => Text(
-              '${val.toInt()}',
-              style: TextStyle(fontSize: 9, color: context.secondaryText),
-            ),
-          ),
-        ),
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: (val, _) => Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                'Week ${val.toInt() + 1}',
-                style:
-                    TextStyle(fontSize: 9, color: context.secondaryText),
-              ),
-            ),
-          ),
-        ),
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 24,
+            getTitlesWidget: (v, _) => Text('${v.toInt()}', style: TextStyle(fontSize: 9, color: context.secondaryText)))),
+        bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true,
+            getTitlesWidget: (v, _) => Padding(padding: const EdgeInsets.only(top: 4),
+                child: Text('Wk ${v.toInt() + 1}', style: TextStyle(fontSize: 9, color: context.secondaryText))))),
       ),
       borderData: FlBorderData(show: false),
       barGroups: data.weeklyBars,
       barTouchData: BarTouchData(
         touchTooltipData: BarTouchTooltipData(
-          getTooltipColor: (_) =>
-              context.isDark ? AppColors.darkSurface : Colors.white,
-          getTooltipItem: (group, _, rod, __) => BarTooltipItem(
-            '${rod.toY.toInt()} classes',
-            TextStyle(
-              color: context.accent,
-              fontWeight: FontWeight.w600,
-              fontSize: 12,
-            ),
-          ),
+          getTooltipColor: (_) => context.surface,
+          getTooltipItem: (g, _, rod, __) => BarTooltipItem('${rod.toY.toInt()} classes',
+              TextStyle(color: context.accentGreen, fontWeight: FontWeight.w600, fontSize: 12)),
         ),
       ),
     );
   }
 }
 
-// ── Summary Badge ─────────────────────────────────────────────────────────────
-class _SummaryBadge extends StatelessWidget {
-  const _SummaryBadge(
-      {required this.label, required this.value, required this.color});
+class _BigStat extends StatelessWidget {
+  const _BigStat({required this.label, required this.value, required this.color, this.suffix});
   final String label;
   final String value;
   final Color color;
+  final String? suffix;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppConstants.radiusMD),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: TextStyle(fontSize: 11, color: context.secondaryText),
-            ),
+            Text(label, style: TextStyle(fontSize: 10, color: context.secondaryText)),
             const SizedBox(height: 4),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: color,
-              ),
-            ),
+            Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: color)),
+            if (suffix != null)
+              Text(suffix!, style: TextStyle(fontSize: 9, color: context.secondaryText)),
           ],
         ),
       ),
@@ -330,145 +216,60 @@ class _SummaryBadge extends StatelessWidget {
   }
 }
 
-// ── Donut Rings ───────────────────────────────────────────────────────────────
-class _DonutRings extends StatelessWidget {
-  const _DonutRings({required this.entries});
+class _ProgressList extends StatelessWidget {
+  const _ProgressList({required this.entries});
   final List<DonutEntry> entries;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        SizedBox(
-          height: 200,
-          child: Stack(
-            alignment: Alignment.center,
-            children: entries.asMap().entries.map((e) {
-              final idx = e.key;
-              final entry = e.value;
-              final radius = 80.0 - idx * 18;
-              if (radius < 10) return const SizedBox.shrink();
-              return PieChart(
-                PieChartData(
-                  startDegreeOffset: -90,
-                  sections: [
-                    PieChartSectionData(
-                      value: entry.percent,
-                      color: entry.color,
-                      radius: 10,
-                      showTitle: false,
-                    ),
-                    PieChartSectionData(
-                      value: 100 - entry.percent,
-                      color: entry.color.withValues(alpha: 0.1),
-                      radius: 10,
-                      showTitle: false,
-                    ),
-                  ],
+      children: entries.map((e) => Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Row(
+          children: [
+            Container(width: 8, height: 8, decoration: BoxDecoration(color: e.color, shape: BoxShape.circle)),
+            const SizedBox(width: 10),
+            Expanded(child: Text(e.studentName, style: TextStyle(fontSize: 13, color: context.primaryText))),
+            const SizedBox(width: 10),
+            SizedBox(
+              width: 100,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: e.percent / 100,
+                  minHeight: 6,
+                  backgroundColor: context.borderColor,
+                  valueColor: AlwaysStoppedAnimation(e.color),
                 ),
-              );
-            }).toList(),
-          ),
-        ),
-        const SizedBox(height: 16),
-        // Legend
-        ...entries.map(
-          (e) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: e.color,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    e.studentName,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: context.primaryText,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: e.color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '${e.percent.toStringAsFixed(0)}%',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: e.color,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            const SizedBox(width: 8),
+            Text('${e.percent.toStringAsFixed(0)}%',
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: e.color)),
+          ],
         ),
-      ],
+      )).toList(),
     );
   }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-class _ChartTitle extends StatelessWidget {
-  const _ChartTitle(
-      {required this.title, required this.subtitle, required this.icon});
-  final String title;
-  final String subtitle;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: context.accent),
-        const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: context.primaryText)),
-            Text(subtitle,
-                style: TextStyle(fontSize: 11, color: context.secondaryText)),
-          ],
-        ),
-      ],
-    );
-  }
+Widget _SectionLabel(String title, IconData icon, Color color) {
+  return Row(children: [
+    Icon(icon, size: 16, color: color),
+    const SizedBox(width: 8),
+    Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: color)),
+  ]);
 }
 
-class _EmptyChart extends StatelessWidget {
-  const _EmptyChart(this.message);
-  final String message;
-
-  @override
-  Widget build(BuildContext context) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.bar_chart_rounded,
-                size: 36,
-                color: context.secondaryText.withValues(alpha: 0.3)),
-            const SizedBox(height: 8),
-            Text(
-              message,
-              style: TextStyle(fontSize: 12, color: context.secondaryText),
-            ),
-          ],
-        ),
-      );
+Widget _EmptyChart(String msg) {
+  return Builder(builder: (context) => Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.bar_chart_rounded, size: 32, color: context.secondaryText.withValues(alpha: 0.3)),
+        const SizedBox(height: 8),
+        Text(msg, style: TextStyle(fontSize: 12, color: context.secondaryText)),
+      ],
+    ),
+  ));
 }

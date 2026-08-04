@@ -1,86 +1,72 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../core/extensions/context_ext.dart';
-// removed unused import
-import '../../core/constants/app_constants.dart';
 
-/// The core reusable glassmorphic container card.
-/// In dark mode: backdrop blur + neon glow.
-/// In light mode: soft drop shadow + lighter blur.
-class GlassCard extends StatelessWidget {
-  const GlassCard({
+/// Core reusable card. Clean, minimal, no backdrop blur in light mode.
+class TCard extends StatelessWidget {
+  const TCard({
     super.key,
     required this.child,
     this.padding,
-    this.borderRadius,
     this.margin,
+    this.color,
     this.glowColor,
+    this.borderRadius,
     this.onTap,
+    this.border,
   });
 
   final Widget child;
   final EdgeInsetsGeometry? padding;
-  final BorderRadius? borderRadius;
   final EdgeInsetsGeometry? margin;
+  final Color? color;
   final Color? glowColor;
+  final BorderRadius? borderRadius;
   final VoidCallback? onTap;
+  final Border? border;
 
   @override
   Widget build(BuildContext context) {
-    final ext = context.themeExt;
-    final radius = borderRadius ?? BorderRadius.circular(AppConstants.radiusLG);
+    final radius = borderRadius ?? BorderRadius.circular(20);
     final isDark = context.isDark;
-    final effectiveGlow = glowColor ??
-        (isDark ? context.themeExt.cardGlowColor : Colors.transparent);
+    final bg = color ?? context.surface;
+    final glow = glowColor;
 
     return Container(
-      margin: margin ??
-          const EdgeInsets.symmetric(
-            horizontal: AppConstants.spacingMD,
-            vertical: AppConstants.spacingSM,
-          ),
+      margin: margin ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
+        color: bg,
         borderRadius: radius,
-        boxShadow: isDark && ext.accentGlow
-            ? [
-                BoxShadow(
-                  color: effectiveGlow,
-                  blurRadius: 24,
-                  spreadRadius: -4,
-                  offset: const Offset(0, 8),
-                ),
-              ]
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+        border: border ?? Border.all(color: context.borderColor, width: 1),
+        boxShadow: isDark && glow != null
+            ? [BoxShadow(color: glow, blurRadius: 20, spreadRadius: -4, offset: const Offset(0, 6))]
+            : [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 12, offset: const Offset(0, 3))],
       ),
-      child: ClipRRect(
+      child: Material(
+        color: Colors.transparent,
         borderRadius: radius,
-        child: BackdropFilter(
-          filter:
-              ImageFilter.blur(sigmaX: ext.glassBlur, sigmaY: ext.glassBlur),
-          child: GestureDetector(
-            onTap: onTap,
-            child: Container(
-              padding:
-                  padding ?? const EdgeInsets.all(AppConstants.cardPaddingV),
-              decoration: BoxDecoration(
-                color: context.surface,
-                borderRadius: radius,
-                border: Border.all(
-                  color: context.borderColor,
-                  width: 1,
-                ),
-              ),
-              child: child,
-            ),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: radius,
+          child: Padding(
+            padding: padding ?? const EdgeInsets.all(16),
+            child: child,
           ),
         ),
       ),
     );
   }
+}
+
+// Keep GlassCard as alias so existing code compiles
+class GlassCard extends TCard {
+  const GlassCard({
+    super.key,
+    required super.child,
+    super.padding,
+    super.margin,
+    super.color,
+    super.glowColor,
+    super.borderRadius,
+    super.onTap,
+  });
 }

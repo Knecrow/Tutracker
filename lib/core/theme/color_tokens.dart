@@ -1,56 +1,54 @@
-// Core color tokens for both dark and light themes.
-// All colors are designed to the exact specification in the architecture blueprint.
-
 import 'package:flutter/material.dart';
 
 class AppColors {
   AppColors._();
 
-  // ── Dark Mode ─────────────────────────────────────────────────────────────
-  static const Color darkBackground = Color(0xFF0B0F19);
-  static const Color darkSurface = Color(0xFF161D2F);      // solid dark card surface
-  static const Color darkBorder = Color(0x20FFFFFF);       // rgba(255,255,255,0.13)
-  static const Color darkAccentGreen = Color(0xFF10B981);  // neon emerald
-  static const Color darkAccentBlue = Color(0xFF3B82F6);   // neon blue
-  static const Color darkTextPrimary = Color(0xFFF1F5F9);
-  static const Color darkTextSecondary = Color(0xFF94A3B8); // Slate 400
-  static const Color darkCardGlow = Color(0x2010B981);     // green glow shadow
-  static const Color darkBlueGlow = Color(0x203B82F6);     // blue glow shadow
-  static const Color darkDivider = Color(0x1AFFFFFF);
+  // ── Dark Mode ──────────────────────────────────────────────────────────────
+  static const Color darkBackground  = Color(0xFF0C0E1A); // deep navy-black
+  static const Color darkSurface     = Color(0xFF141727); // card surface
+  static const Color darkElevated    = Color(0xFF1C2038); // elevated elements
+  static const Color darkBorder      = Color(0xFF252B45); // subtle border
+  static const Color darkAccent      = Color(0xFFA78BFA); // soft violet (primary)
+  static const Color darkAccentGreen = Color(0xFF34D399); // emerald (money)
+  static const Color darkAccentBlue  = Color(0xFF60A5FA); // blue (info)
+  static const Color darkTextPrimary   = Color(0xFFEEF2FF); // warm white
+  static const Color darkTextSecondary = Color(0xFF6B7A99); // muted
 
-  // ── Light Mode ────────────────────────────────────────────────────────────
-  static const Color lightBackground = Color(0xFFF0F4F8);
-  static const Color lightSurface = Color(0xFFFFFFFF);     // solid white card surface
-  static const Color lightBorder = Color(0xFFE2E8F0);      // Slate 200
-  static const Color lightAccentGreen = Color(0xFF059669); // flat emerald
-  static const Color lightAccentBlue = Color(0xFF2563EB);  // flat blue
-  static const Color lightTextPrimary = Color(0xFF0F172A);
-  static const Color lightTextSecondary = Color(0xFF475569); // Slate 600 (was 64748B)
-  static const Color lightDivider = Color(0x1A0F172A);
+  // ── Light Mode ─────────────────────────────────────────────────────────────
+  static const Color lightBackground  = Color(0xFFF4F6FF); // lavender-tinted white
+  static const Color lightSurface     = Color(0xFFFFFFFF); // pure white card
+  static const Color lightElevated    = Color(0xFFEEF0FF);
+  static const Color lightBorder      = Color(0xFFDDE1F5); // soft indigo border
+  static const Color lightAccent      = Color(0xFF7C3AED); // vivid violet
+  static const Color lightAccentGreen = Color(0xFF059669); // emerald
+  static const Color lightAccentBlue  = Color(0xFF2563EB); // blue
+  static const Color lightTextPrimary   = Color(0xFF1A1F3C); // deep navy text
+  static const Color lightTextSecondary = Color(0xFF7580A0);
+  static const Color lightDivider = Color(0xFFE5E8F8);
+  static const Color darkDivider  = Color(0xFF1E2540);
 
-  // ── Semantic / Shared ─────────────────────────────────────────────────────
-  static const Color success = Color(0xFF10B981);
-  static const Color warning = Color(0xFFF59E0B);
-  static const Color error = Color(0xFFEF4444);
-  static const Color transparent = Colors.transparent;
+  // ── Semantic ───────────────────────────────────────────────────────────────
+  static const Color success  = Color(0xFF34D399);
+  static const Color warning  = Color(0xFFFBBF24);
+  static const Color error    = Color(0xFFF87171);
 
-  // ── Student Avatar Palette ─────────────────────────────────────────────────
+  // ── Avatar Palette ─────────────────────────────────────────────────────────
   static const List<Color> avatarPalette = [
-    Color(0xFF6366F1), // Indigo
-    Color(0xFF8B5CF6), // Violet
-    Color(0xFF10B981), // Emerald
-    Color(0xFF3B82F6), // Blue
-    Color(0xFFF59E0B), // Amber
-    Color(0xFFEC4899), // Pink
-    Color(0xFF14B8A6), // Teal
-    Color(0xFFF97316), // Orange
-    Color(0xFFEF4444), // Red
-    Color(0xFF06B6D4), // Cyan
+    Color(0xFFA78BFA), // Violet
+    Color(0xFF34D399), // Emerald
+    Color(0xFF60A5FA), // Blue
+    Color(0xFFFBBF24), // Amber
+    Color(0xFFF472B6), // Pink
+    Color(0xFF2DD4BF), // Teal
+    Color(0xFFFB923C), // Orange
+    Color(0xFF818CF8), // Indigo
+    Color(0xFF4ADE80), // Green
+    Color(0xFFE879F9), // Fuchsia
+    Color(0xFF38BDF8), // Sky
+    Color(0xFFF87171), // Red
     Color(0xFF84CC16), // Lime
-    Color(0xFF0EA5E9), // Sky
-    Color(0xFFA855F7), // Purple
-    Color(0xFFD946EF), // Fuchsia
-    Color(0xFFF43F5E), // Rose
-    Color(0xFF64748B), // Slate/Grey
+    Color(0xFF94A3B8), // Slate
+    Color(0xFFD946EF), // Magenta
+    Color(0xFFA3E635), // Yellow-Green
   ];
 }

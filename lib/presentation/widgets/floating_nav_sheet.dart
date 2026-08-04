@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/extensions/context_ext.dart';
 import '../../core/theme/color_tokens.dart';
-import '../../core/constants/app_constants.dart';
 import '../../core/haptics/haptic_service.dart';
 
-/// Shell widget that wraps the main tab routes and provides:
-/// - Floating bottom navigation sheet
-/// - FAB for adding a new student
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.child});
   final Widget child;
@@ -16,142 +12,104 @@ class AppShell extends StatelessWidget {
   static const _icons = [
     Icons.home_rounded,
     Icons.bar_chart_rounded,
-    Icons.calendar_month_rounded,
+    Icons.history_rounded,
     Icons.settings_rounded,
   ];
   static const _labels = ['Home', 'Insights', 'History', 'Settings'];
 
-  int _indexFromLocation(String location) {
-    // Match by prefix so nested routes still highlight the right tab
+  int _indexFromLocation(String loc) {
     for (var i = _routes.length - 1; i >= 0; i--) {
-      if (location.startsWith(_routes[i])) return i;
+      if (loc.startsWith(_routes[i])) return i;
     }
     return 0;
   }
 
-  void _onTap(int index, BuildContext context) {
-    HapticService.light();
-    context.go(_routes[index]);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDark;
-    // Sync tab with actual GoRouter location — no internal state needed
     final location = GoRouterState.of(context).matchedLocation;
     final selectedIndex = _indexFromLocation(location);
 
     return Scaffold(
       backgroundColor: context.background,
       body: child,
-      floatingActionButton: _buildFAB(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: _buildBottomNav(context, isDark, selectedIndex),
-    );
-  }
-
-  Widget _buildFAB(BuildContext context) {
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [context.accent, context.accentBlue],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: context.isDark
-            ? [
-                BoxShadow(
-                  color: context.accent.withValues(alpha: 0.4),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : [
-                BoxShadow(
-                  color: context.accent.withValues(alpha: 0.25),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(28),
-          onTap: () {
-            HapticService.medium();
-            context.push('/add-student');
-          },
-          child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
-        ),
+      bottomNavigationBar: _FloatingNavBar(
+        selectedIndex: selectedIndex,
+        onTap: (i) {
+          HapticService.light();
+          context.go(_routes[i]);
+        },
+        onAdd: () {
+          HapticService.medium();
+          context.push('/add-student');
+        },
       ),
     );
   }
+}
 
-  Widget _buildBottomNav(
-      BuildContext context, bool isDark, int selectedIndex) {
+class _FloatingNavBar extends StatelessWidget {
+  const _FloatingNavBar({
+    required this.selectedIndex,
+    required this.onTap,
+    required this.onAdd,
+  });
+
+  final int selectedIndex;
+  final void Function(int) onTap;
+  final VoidCallback onAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.isDark;
+    final accent = context.accent;
+    final navBg = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final bottomPad = MediaQuery.of(context).padding.bottom;
+
     return Container(
-      height: 72 + context.padding.bottom,
+      height: 68 + bottomPad,
+      padding: EdgeInsets.only(bottom: bottomPad, left: 12, right: 12, top: 0),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkBackground : AppColors.lightBackground,
-        border: Border(
-          top: BorderSide(
-            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-            width: 1,
+        color: navBg,
+        border: Border(top: BorderSide(color: context.borderColor, width: 1)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _NavItem(icon: AppShell._icons[0], label: AppShell._labels[0], selected: selectedIndex == 0, onTap: () => onTap(0)),
+          _NavItem(icon: AppShell._icons[1], label: AppShell._labels[1], selected: selectedIndex == 1, onTap: () => onTap(1)),
+
+          // ── Centre FAB ──────────────────────────────────────────────────
+          GestureDetector(
+            onTap: onAdd,
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [accent, accent.withValues(alpha: 0.7)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: isDark
+                    ? [BoxShadow(color: accent.withValues(alpha: 0.35), blurRadius: 14, offset: const Offset(0, 4))]
+                    : [BoxShadow(color: accent.withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 4))],
+              ),
+              child: const Icon(Icons.add_rounded, color: Colors.white, size: 24),
+            ),
           ),
-        ),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            // Left items
-            _NavItem(
-              icon: _icons[0],
-              label: _labels[0],
-              selected: selectedIndex == 0,
-              onTap: () => _onTap(0, context),
-            ),
-            _NavItem(
-              icon: _icons[1],
-              label: _labels[1],
-              selected: selectedIndex == 1,
-              onTap: () => _onTap(1, context),
-            ),
-            // FAB gap
-            const SizedBox(width: 56),
-            // Right items
-            _NavItem(
-              icon: _icons[2],
-              label: _labels[2],
-              selected: selectedIndex == 2,
-              onTap: () => _onTap(2, context),
-            ),
-            _NavItem(
-              icon: _icons[3],
-              label: _labels[3],
-              selected: selectedIndex == 3,
-              onTap: () => _onTap(3, context),
-            ),
-          ],
-        ),
+
+          _NavItem(icon: AppShell._icons[2], label: AppShell._labels[2], selected: selectedIndex == 2, onTap: () => onTap(2)),
+          _NavItem(icon: AppShell._icons[3], label: AppShell._labels[3], selected: selectedIndex == 3, onTap: () => onTap(3)),
+        ],
       ),
     );
   }
 }
 
 class _NavItem extends StatelessWidget {
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
+  const _NavItem({required this.icon, required this.label, required this.selected, required this.onTap});
   final IconData icon;
   final String label;
   final bool selected;
@@ -162,35 +120,32 @@ class _NavItem extends StatelessWidget {
     final accent = context.accent;
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: SizedBox(
-        width: AppConstants.minTouchTarget + 8,
-        height: AppConstants.minTouchTarget + 8,
+        width: 60,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.all(6),
+              curve: Curves.easeOut,
+              width: 36,
+              height: 28,
               decoration: BoxDecoration(
-                color: selected
-                    ? accent.withValues(alpha: 0.12)
-                    : Colors.transparent,
+                color: selected ? accent.withValues(alpha: 0.14) : Colors.transparent,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(
-                icon,
-                size: 22,
-                color: selected ? accent : context.secondaryText,
-              ),
+              child: Icon(icon, size: 19, color: selected ? accent : context.secondaryText),
             ),
             const SizedBox(height: 2),
-            Text(
-              label,
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
               style: TextStyle(
                 fontSize: 10,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
                 color: selected ? accent : context.secondaryText,
               ),
+              child: Text(label),
             ),
           ],
         ),
