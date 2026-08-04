@@ -86,7 +86,6 @@ class HistoryScreen extends ConsumerWidget {
                                 decoration: BoxDecoration(
                                   color: c.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: c.withValues(alpha: 0.3), width: 1.5),
                                 ),
                                 child: Center(
                                   child: Text(
@@ -122,9 +121,6 @@ class HistoryScreen extends ConsumerWidget {
                                       decoration: BoxDecoration(
                                         color: cycle.isPaid ? context.accentGreen.withValues(alpha: 0.12) : context.elevated,
                                         borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: cycle.isPaid ? context.accentGreen.withValues(alpha: 0.3) : context.borderColor,
-                                        ),
                                       ),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,

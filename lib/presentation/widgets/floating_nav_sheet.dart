@@ -70,7 +70,6 @@ class _FloatingNavBar extends StatelessWidget {
       padding: EdgeInsets.only(bottom: bottomPad, left: 12, right: 12, top: 0),
       decoration: BoxDecoration(
         color: navBg,
-        border: Border(top: BorderSide(color: context.borderColor, width: 1)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

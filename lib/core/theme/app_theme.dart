@@ -43,15 +43,15 @@ class AppTheme {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.darkBorder),
+          borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.darkBorder),
+          borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.darkAccent, width: 1.5),
+          borderSide: BorderSide.none,
         ),
         hintStyle: const TextStyle(color: AppColors.darkTextSecondary, fontSize: 14),
         prefixIconColor: AppColors.darkTextSecondary,
@@ -74,7 +74,7 @@ class AppTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.darkElevated,
-        side: const BorderSide(color: AppColors.darkBorder),
+        side: BorderSide.none,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         labelStyle: const TextStyle(color: AppColors.darkTextPrimary, fontSize: 12),
       ),
@@ -126,15 +126,15 @@ class AppTheme {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.lightBorder),
+          borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.lightBorder),
+          borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.lightAccent, width: 1.5),
+          borderSide: BorderSide.none,
         ),
         hintStyle: const TextStyle(color: AppColors.lightTextSecondary, fontSize: 14),
         prefixIconColor: AppColors.lightTextSecondary,
@@ -157,7 +157,7 @@ class AppTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.lightElevated,
-        side: const BorderSide(color: AppColors.lightBorder),
+        side: BorderSide.none,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         labelStyle: const TextStyle(color: AppColors.lightTextPrimary, fontSize: 12),
       ),

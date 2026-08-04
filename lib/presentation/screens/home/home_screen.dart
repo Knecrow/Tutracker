@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/extensions/context_ext.dart';
 import '../../../core/theme/color_tokens.dart';
@@ -11,6 +12,7 @@ import '../../providers/cycle_provider.dart';
 import '../../providers/analytics_provider.dart';
 import '../../widgets/cycle_rollover_dialog.dart';
 import '../../widgets/delete_student_dialog.dart';
+import '../../widgets/app_logo.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../../data/models/student.dart';
 
@@ -44,18 +46,11 @@ class HomeScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'TuTracker',
-                                style: TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w800,
-                                  color: context.primaryText,
-                                  letterSpacing: -0.8,
-                                ),
-                              ),
+                              const TuTrackerLogo(),
+                              const SizedBox(height: 2),
                               Text(
                                 '${students.length} student${students.length != 1 ? 's' : ''} tracked',
-                                style: TextStyle(fontSize: 13, color: context.secondaryText),
+                                style: TextStyle(fontSize: 12, color: context.secondaryText),
                               ),
                             ],
                           ),
@@ -69,7 +64,6 @@ class HomeScreen extends ConsumerWidget {
                             decoration: BoxDecoration(
                               color: context.elevated,
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: context.borderColor),
                             ),
                             child: Icon(
                               isDark ? Icons.wb_sunny_rounded : Icons.nights_stay_rounded,
@@ -222,7 +216,6 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                     decoration: BoxDecoration(
                       color: color.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
                     ),
                     child: Center(
                       child: Text(
@@ -389,10 +382,6 @@ class _AttendanceGrid extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: isChecked ? accentColor : context.elevated,
                   borderRadius: BorderRadius.circular(9),
-                  border: Border.all(
-                    color: isChecked ? accentColor : context.borderColor,
-                    width: 1.5,
-                  ),
                 ),
                 child: Center(
                   child: isChecked && day != null
@@ -419,11 +408,41 @@ class _AttendanceGrid extends ConsumerWidget {
             );
           }),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         Text(
           'Tap to toggle · Long-press to pick date',
           style: TextStyle(fontSize: 10, color: context.secondaryText.withValues(alpha: 0.6)),
         ),
+        if (timestamps.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Text(
+            'Logged Class Dates:',
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: context.secondaryText),
+          ),
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: timestamps.map((ts) {
+              final parts = ts.split('|');
+              final dt = DateTime.tryParse(parts.first);
+              final idx = parts.length > 1 ? int.tryParse(parts.last) : null;
+              if (dt == null) return const SizedBox.shrink();
+              final dateStr = DateFormat('EEE, d MMM yyyy').format(dt);
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                decoration: BoxDecoration(
+                  color: accentColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  idx != null ? '#${idx + 1}: $dateStr' : dateStr,
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: accentColor),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       ],
     );
   }
