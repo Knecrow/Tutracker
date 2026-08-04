@@ -8,43 +8,45 @@ import '../../core/haptics/haptic_service.dart';
 /// Shell widget that wraps the main tab routes and provides:
 /// - Floating bottom navigation sheet
 /// - FAB for adding a new student
-class AppShell extends StatefulWidget {
+class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.child});
   final Widget child;
 
-  @override
-  State<AppShell> createState() => _AppShellState();
-}
-
-class _AppShellState extends State<AppShell> {
-  int _selectedIndex = 0;
-
-  final _routes = ['/', '/analytics', '/history', '/settings'];
-  final _icons = [
+  static const _routes = ['/', '/analytics', '/history', '/settings'];
+  static const _icons = [
     Icons.home_rounded,
     Icons.bar_chart_rounded,
     Icons.calendar_month_rounded,
     Icons.settings_rounded,
   ];
-  final _labels = ['Home', 'Insights', 'History', 'Settings'];
+  static const _labels = ['Home', 'Insights', 'History', 'Settings'];
+
+  int _indexFromLocation(String location) {
+    // Match by prefix so nested routes still highlight the right tab
+    for (var i = _routes.length - 1; i >= 0; i--) {
+      if (location.startsWith(_routes[i])) return i;
+    }
+    return 0;
+  }
 
   void _onTap(int index, BuildContext context) {
-    if (index == _selectedIndex) return;
     HapticService.light();
-    setState(() => _selectedIndex = index);
     context.go(_routes[index]);
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDark;
+    // Sync tab with actual GoRouter location — no internal state needed
+    final location = GoRouterState.of(context).matchedLocation;
+    final selectedIndex = _indexFromLocation(location);
 
     return Scaffold(
       backgroundColor: context.background,
-      body: widget.child,
+      body: child,
       floatingActionButton: _buildFAB(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: _buildBottomNav(context, isDark),
+      bottomNavigationBar: _buildBottomNav(context, isDark, selectedIndex),
     );
   }
 
@@ -67,7 +69,13 @@ class _AppShellState extends State<AppShell> {
                   offset: const Offset(0, 4),
                 ),
               ]
-            : [],
+            : [
+                BoxShadow(
+                  color: context.accent.withValues(alpha: 0.25),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -83,7 +91,8 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Widget _buildBottomNav(BuildContext context, bool isDark) {
+  Widget _buildBottomNav(
+      BuildContext context, bool isDark, int selectedIndex) {
     return Container(
       height: 72 + context.padding.bottom,
       decoration: BoxDecoration(
@@ -104,13 +113,13 @@ class _AppShellState extends State<AppShell> {
             _NavItem(
               icon: _icons[0],
               label: _labels[0],
-              selected: _selectedIndex == 0,
+              selected: selectedIndex == 0,
               onTap: () => _onTap(0, context),
             ),
             _NavItem(
               icon: _icons[1],
               label: _labels[1],
-              selected: _selectedIndex == 1,
+              selected: selectedIndex == 1,
               onTap: () => _onTap(1, context),
             ),
             // FAB gap
@@ -119,13 +128,13 @@ class _AppShellState extends State<AppShell> {
             _NavItem(
               icon: _icons[2],
               label: _labels[2],
-              selected: _selectedIndex == 2,
+              selected: selectedIndex == 2,
               onTap: () => _onTap(2, context),
             ),
             _NavItem(
               icon: _icons[3],
               label: _labels[3],
-              selected: _selectedIndex == 3,
+              selected: selectedIndex == 3,
               onTap: () => _onTap(3, context),
             ),
           ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../presentation/screens/home/home_screen.dart';
 import '../../presentation/screens/add_student/add_student_sheet.dart';
+import '../../presentation/screens/add_student/edit_student_sheet.dart';
 import '../../presentation/screens/analytics/analytics_screen.dart';
 import '../../presentation/screens/history/history_screen.dart';
 import '../../presentation/screens/settings/settings_screen.dart';
@@ -36,6 +37,15 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) => const ModalBottomSheetPage(
         child: AddStudentSheet(),
       ),
+    ),
+    GoRoute(
+      path: '/edit-student/:id',
+      pageBuilder: (context, state) {
+        final studentId = state.pathParameters['id']!;
+        return ModalBottomSheetPage(
+          child: EditStudentSheet(studentId: studentId),
+        );
+      },
     ),
   ],
 );

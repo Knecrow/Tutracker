@@ -26,12 +26,14 @@ class StudentsNotifier extends StateNotifier<List<Student>> {
     required double monthlyFee,
     required int targetClasses,
     required int avatarColorValue,
+    String? subject,
   }) async {
     await _repo.add(
       name: name,
       monthlyFee: monthlyFee,
       targetClasses: targetClasses,
       avatarColorValue: avatarColorValue,
+      subject: subject,
     );
     load();
   }

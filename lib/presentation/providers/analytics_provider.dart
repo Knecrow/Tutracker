@@ -15,6 +15,7 @@ class AnalyticsData {
   final List<DonutEntry> donutEntries;
   final double totalPendingEarnings;
   final int totalClassesThisMonth;
+  final double lifetimeEarnings;
 
   const AnalyticsData({
     required this.earningsTrend,
@@ -23,6 +24,7 @@ class AnalyticsData {
     required this.donutEntries,
     required this.totalPendingEarnings,
     required this.totalClassesThisMonth,
+    required this.lifetimeEarnings,
   });
 
   static const AnalyticsData empty = AnalyticsData(
@@ -32,6 +34,7 @@ class AnalyticsData {
     donutEntries: [],
     totalPendingEarnings: 0,
     totalClassesThisMonth: 0,
+    lifetimeEarnings: 0,
   );
 }
 
@@ -57,9 +60,14 @@ final analyticsProvider = Provider<AnalyticsData>((ref) {
 
   double totalPending = 0;
   int totalClassesThisMonth = 0;
+  double lifetimeEarnings = 0;
   final donutEntries = <DonutEntry>[];
 
-  // ── Donut + Pending Earnings ───────────────────────────────────────────────
+  final now = DateTime.now();
+  final currentMonthStart = DateTime(now.year, now.month, 1);
+  final currentMonthEnd = DateTime(now.year, now.month + 1, 1);
+
+  // ── Donut + Pending Earnings ─────────────────────────────────────────────
   for (var i = 0; i < students.length; i++) {
     final s = students[i];
     // Watch attendance to get reactive updates
@@ -68,9 +76,16 @@ final analyticsProvider = Provider<AnalyticsData>((ref) {
     final percent = s.targetClasses > 0
         ? (attended / s.targetClasses * 100).clamp(0.0, 100.0)
         : 0.0;
-    final perSession = s.monthlyFee / s.targetClasses;
+    final perSession = s.targetClasses > 0 ? s.monthlyFee / s.targetClasses : 0.0;
+
+    // Pending = only the current active cycle's unpaid earned amount
     totalPending += perSession * attended;
-    totalClassesThisMonth += attended;
+
+    // Classes this month = only timestamps within current calendar month
+    final allDates = attendanceRepo.getAttendedDates(s.id);
+    final thisMonthCount = allDates.where((d) =>
+        !d.isBefore(currentMonthStart) && d.isBefore(currentMonthEnd)).length;
+    totalClassesThisMonth += thisMonthCount;
 
     donutEntries.add(DonutEntry(
       studentId: s.id,
@@ -80,8 +95,7 @@ final analyticsProvider = Provider<AnalyticsData>((ref) {
     ));
   }
 
-  // ── Earnings Trend (last 6 archived cycles grouped by month) ───────────────
-  final now = DateTime.now();
+  // ── Earnings Trend (last 6 archived cycles grouped by month) ────────────
   final monthMap = <String, double>{};
   final monthLabels = <String>[];
 
@@ -94,33 +108,43 @@ final analyticsProvider = Provider<AnalyticsData>((ref) {
 
   final allCycles = cycleRepo.getAllArchivedCycles();
   for (final cycle in allCycles) {
+    final earned = cycle.totalEarned ?? 0;
+    lifetimeEarnings += earned;
+
     final dt = DateTime.parse(cycle.startDate);
     final key = '${dt.year}-${dt.month.toString().padLeft(2, '0')}';
     if (monthMap.containsKey(key)) {
-      monthMap[key] = (monthMap[key] ?? 0) + (cycle.totalEarned ?? 0);
+      monthMap[key] = (monthMap[key] ?? 0) + earned;
     }
   }
 
   final spotValues = monthMap.values.toList();
-  final earningsTrend = List.generate(spotValues.length, (i) => FlSpot(i.toDouble(), spotValues[i]));
+  final earningsTrend = List.generate(
+      spotValues.length, (i) => FlSpot(i.toDouble(), spotValues[i]));
 
-  // ── Weekly Bars (current active cycle attendance) ──────────────────────────
+  // ── Weekly Bars (current active cycle attendance) ────────────────────────
+  // Use relative week index within current month (Week 1 = days 1-7, etc.)
   final weekMap = <int, int>{};
   for (final s in students) {
     final dates = attendanceRepo.getAttendedDates(s.id);
     for (final d in dates) {
-      final w = d.weekNumber;
-      weekMap[w] = (weekMap[w] ?? 0) + 1;
+      // Only include dates within current cycle month
+      if (d.year == now.year && d.month == now.month) {
+        final weekIndex = ((d.day - 1) ~/ 7).clamp(0, 3); // week 0..3
+        weekMap[weekIndex] = (weekMap[weekIndex] ?? 0) + 1;
+      }
     }
   }
 
-  final sortedWeeks = weekMap.keys.toList()..sort();
-  final weeklyBars = sortedWeeks.asMap().entries.map((e) {
+  final sortedWeekKeys = weekMap.keys.toList()..sort();
+  final weeklyBars = sortedWeekKeys.asMap().entries.map((e) {
+    final barIndex = e.key;       // sequential bar index 0,1,2...
+    final weekIndex = e.value;    // actual week index key (0..3)
     return BarChartGroupData(
-      x: e.key,
+      x: barIndex,
       barRods: [
         BarChartRodData(
-          toY: weekMap[e.value]!.toDouble(),
+          toY: (weekMap[weekIndex] ?? 0).toDouble(),
           width: 18,
           borderRadius: const BorderRadius.all(Radius.circular(6)),
           gradient: const LinearGradient(
@@ -133,6 +157,8 @@ final analyticsProvider = Provider<AnalyticsData>((ref) {
     );
   }).toList();
 
+  // Store week labels for x-axis
+  // We'll use weekIndex to determine label: "Wk 1", "Wk 2", etc.
   return AnalyticsData(
     earningsTrend: earningsTrend,
     trendMonthLabels: monthLabels,
@@ -140,5 +166,6 @@ final analyticsProvider = Provider<AnalyticsData>((ref) {
     donutEntries: donutEntries,
     totalPendingEarnings: totalPending,
     totalClassesThisMonth: totalClassesThisMonth,
+    lifetimeEarnings: lifetimeEarnings,
   );
 });

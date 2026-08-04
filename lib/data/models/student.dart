@@ -22,6 +22,9 @@ class Student extends HiveObject {
   @HiveField(5)
   late int avatarColorValue; // stored as int (Color.value)
 
+  @HiveField(6)
+  String? subject; // optional subject / notes
+
   Student({
     required this.id,
     required this.name,
@@ -29,6 +32,7 @@ class Student extends HiveObject {
     required this.targetClasses,
     required this.createdAt,
     required this.avatarColorValue,
+    this.subject,
   });
 
   Student copyWith({
@@ -38,6 +42,8 @@ class Student extends HiveObject {
     int? targetClasses,
     String? createdAt,
     int? avatarColorValue,
+    String? subject,
+    bool clearSubject = false,
   }) {
     return Student(
       id: id ?? this.id,
@@ -46,6 +52,7 @@ class Student extends HiveObject {
       targetClasses: targetClasses ?? this.targetClasses,
       createdAt: createdAt ?? this.createdAt,
       avatarColorValue: avatarColorValue ?? this.avatarColorValue,
+      subject: clearSubject ? null : (subject ?? this.subject),
     );
   }
 

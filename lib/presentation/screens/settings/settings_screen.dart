@@ -6,6 +6,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/haptics/haptic_service.dart';
 import '../../../core/theme/color_tokens.dart';
 import '../../providers/settings_provider.dart';
+import '../../providers/analytics_provider.dart';
 import '../../widgets/glass_card.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -15,6 +16,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final settingsNotifier = ref.read(settingsProvider.notifier);
+    final analytics = ref.watch(analyticsProvider);
 
     final currencies = ['৳', '\$', '€', '£', '¥', '₹', '₱'];
 
@@ -154,7 +156,8 @@ class SettingsScreen extends ConsumerWidget {
                           color: context.secondaryText,
                         ),
                       ),
-                      activeColor: context.accent,
+                      activeThumbColor: context.accent,
+                      activeTrackColor: context.accent.withValues(alpha: 0.35),
                       value: settings.hapticsEnabled,
                       onChanged: (val) {
                         HapticService.light();
@@ -200,6 +203,11 @@ class SettingsScreen extends ConsumerWidget {
                     _AboutRow(label: 'Version', value: '1.0.0'),
                     const SizedBox(height: 6),
                     _AboutRow(label: 'Storage Type', value: 'Hive Database (Local)'),
+                    const SizedBox(height: 6),
+                    _AboutRow(
+                      label: 'Lifetime Earnings',
+                      value: '${settings.currencySymbol}${analytics.lifetimeEarnings.toStringAsFixed(0)}',
+                    ),
                   ],
                 ),
               ),
@@ -287,23 +295,27 @@ class SettingsScreen extends ConsumerWidget {
                               ),
                               TextButton(
                                 onPressed: () async {
+                                  final messenger =
+                                      ScaffoldMessenger.of(context);
+                                  final isDark = context.isDark;
+                                  final textColor = context.primaryText;
+                                  final bgColor = isDark
+                                      ? AppColors.darkSurface
+                                      : AppColors.lightSurface;
+                                  final dialogNavigator =
+                                      Navigator.of(dialogContext);
                                   await HapticService.heavy();
-                                  Navigator.pop(dialogContext);
+                                  dialogNavigator.pop();
                                   await settingsNotifier.resetAllData();
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: context.isDark
-                                            ? AppColors.darkSurface
-                                            : AppColors.lightSurface,
-                                        content: Text(
-                                          'All data wiped out.',
-                                          style: TextStyle(
-                                              color: context.primaryText),
-                                        ),
+                                  messenger.showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: bgColor,
+                                      content: Text(
+                                        'All data wiped out.',
+                                        style: TextStyle(color: textColor),
                                       ),
-                                    );
-                                  }
+                                    ),
+                                  );
                                 },
                                 child: const Text('Wipe Data',
                                     style: TextStyle(color: AppColors.error)),

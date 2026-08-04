@@ -8,14 +8,15 @@ import '../../../core/haptics/haptic_service.dart';
 import '../../providers/student_provider.dart';
 import '../../providers/settings_provider.dart';
 
-class AddStudentSheet extends ConsumerStatefulWidget {
-  const AddStudentSheet({super.key});
+class EditStudentSheet extends ConsumerStatefulWidget {
+  const EditStudentSheet({super.key, required this.studentId});
+  final String studentId;
 
   @override
-  ConsumerState<AddStudentSheet> createState() => _AddStudentSheetState();
+  ConsumerState<EditStudentSheet> createState() => _EditStudentSheetState();
 }
 
-class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
+class _EditStudentSheetState extends ConsumerState<EditStudentSheet> {
   final _nameController = TextEditingController();
   final _feeController = TextEditingController();
   final _subjectController = TextEditingController();
@@ -23,6 +24,7 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
   int _targetClasses = 12;
   int _selectedColorIndex = 0;
   bool _saving = false;
+  bool _loaded = false;
 
   @override
   void dispose() {
@@ -32,27 +34,50 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
     super.dispose();
   }
 
+  void _loadStudent() {
+    if (_loaded) return;
+    final students = ref.read(studentsProvider);
+    final student = students.where((s) => s.id == widget.studentId).firstOrNull;
+    if (student == null) return;
+    _nameController.text = student.name;
+    _feeController.text = student.monthlyFee.toStringAsFixed(0);
+    _subjectController.text = student.subject ?? '';
+    _targetClasses = student.targetClasses;
+    _selectedColorIndex = AppColors.avatarPalette.indexWhere(
+        (c) => c.toARGB32() == student.avatarColorValue);
+    if (_selectedColorIndex < 0) _selectedColorIndex = 0;
+    _loaded = true;
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     await HapticService.medium();
 
-    await ref.read(studentsProvider.notifier).addStudent(
-          name: _nameController.text.trim(),
-          monthlyFee: double.parse(_feeController.text.trim()),
-          targetClasses: _targetClasses,
-          avatarColorValue:
-              AppColors.avatarPalette[_selectedColorIndex].toARGB32(),
-          subject: _subjectController.text.trim().isEmpty
-              ? null
-              : _subjectController.text.trim(),
-        );
+    final students = ref.read(studentsProvider);
+    final existing = students.where((s) => s.id == widget.studentId).firstOrNull;
+    if (existing == null) {
+      if (mounted) Navigator.of(context).pop();
+      return;
+    }
 
+    final updated = existing.copyWith(
+      name: _nameController.text.trim(),
+      monthlyFee: double.parse(_feeController.text.trim()),
+      targetClasses: _targetClasses,
+      avatarColorValue: AppColors.avatarPalette[_selectedColorIndex].toARGB32(),
+      subject: _subjectController.text.trim().isEmpty
+          ? null
+          : _subjectController.text.trim(),
+    );
+
+    await ref.read(studentsProvider.notifier).updateStudent(updated);
     if (mounted) Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    _loadStudent();
     final isDark = context.isDark;
     final settings = ref.watch(settingsProvider);
 
@@ -68,7 +93,7 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
         child: Container(
           decoration: BoxDecoration(
             color: (isDark ? const Color(0xFF131929) : const Color(0xFFF8FAFC))
-                .withValues(alpha: 0.8),
+                .withValues(alpha: 0.97),
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppConstants.radiusXL),
             ),
@@ -99,7 +124,7 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
                       ),
                     ),
                     Text(
-                      'New Tuition Profile',
+                      'Edit Profile',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -108,13 +133,13 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Add a student to start tracking attendance',
+                      'Update student information',
                       style: TextStyle(fontSize: 13, color: context.secondaryText),
                     ),
                     const SizedBox(height: 24),
 
-                    // ── Name ────────────────────────────────────────────────
-                    const _FieldLabel('Student Name'),
+                    // ── Name ─────────────────────────────────────────────────
+                    _FieldLabel('Student Name'),
                     const SizedBox(height: 6),
                     TextFormField(
                       controller: _nameController,
@@ -129,8 +154,8 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
                     ),
                     const SizedBox(height: 16),
 
-                    // ── Subject / Notes ──────────────────────────────────
-                    const _FieldLabel('Subject / Notes (optional)'),
+                    // ── Subject / Notes ──────────────────────────────────────
+                    _FieldLabel('Subject / Notes (optional)'),
                     const SizedBox(height: 6),
                     TextFormField(
                       controller: _subjectController,
@@ -142,8 +167,8 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
                     ),
                     const SizedBox(height: 16),
 
-                    // ── Monthly Fee ─────────────────────────────────────────
-                    const _FieldLabel('Monthly Fee'),
+                    // ── Monthly Fee ──────────────────────────────────────────
+                    _FieldLabel('Monthly Fee'),
                     const SizedBox(height: 6),
                     TextFormField(
                       controller: _feeController,
@@ -157,18 +182,19 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
                       ),
                       validator: (v) {
                         if (v == null || v.trim().isEmpty) return 'Fee is required';
-                        if (double.tryParse(v.trim()) == null)
+                        if (double.tryParse(v.trim()) == null) {
                           return 'Enter a valid number';
+                        }
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
 
-                    // ── Target Classes ──────────────────────────────────────
+                    // ── Target Classes ───────────────────────────────────────
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const _FieldLabel('Target Classes / Month'),
+                        _FieldLabel('Target Classes / Month'),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
@@ -199,8 +225,8 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
                     ),
                     const SizedBox(height: 16),
 
-                    // ── Profile Theme Color ───────────────────────────────
-                    const _FieldLabel('Profile Theme Color'),
+                    // ── Profile Theme Color ──────────────────────────────────
+                    _FieldLabel('Profile Theme Color'),
                     const SizedBox(height: 12),
                     SizedBox(
                       height: 52,
@@ -247,7 +273,7 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
                     ),
                     const SizedBox(height: 32),
 
-                    // ── Actions ─────────────────────────────────────────────
+                    // ── Actions ──────────────────────────────────────────────
                     Row(
                       children: [
                         Expanded(
@@ -287,7 +313,7 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
                                       strokeWidth: 2,
                                     ),
                                   )
-                                : const Text('Save Profile'),
+                                : const Text('Save Changes'),
                           ),
                         ),
                       ],

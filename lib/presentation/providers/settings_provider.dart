@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import '../../core/constants/app_constants.dart';
+import 'student_provider.dart';
 
 class SettingsState {
   final String currencySymbol;
@@ -23,13 +24,15 @@ class SettingsState {
 }
 
 class SettingsNotifier extends StateNotifier<SettingsState> {
-  SettingsNotifier()
+  SettingsNotifier(this._ref)
       : super(const SettingsState(
           currencySymbol: '৳',
           hapticsEnabled: true,
         )) {
     _loadSettings();
   }
+
+  final Ref _ref;
 
   Box get _box => Hive.box(AppConstants.settingsBox);
 
@@ -55,11 +58,16 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     await Hive.box(AppConstants.attendanceBox).clear();
     await Hive.box(AppConstants.cyclesBox).clear();
     await _box.clear();
+
+    // Reload settings defaults
     _loadSettings();
+
+    // Reload students so the home screen clears immediately
+    _ref.read(studentsProvider.notifier).load();
   }
 }
 
 final settingsProvider =
     StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
-  return SettingsNotifier();
+  return SettingsNotifier(ref);
 });

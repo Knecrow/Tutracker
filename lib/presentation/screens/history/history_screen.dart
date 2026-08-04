@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/extensions/context_ext.dart';
-import '../../../core/constants/app_constants.dart';
 import '../../../core/extensions/datetime_ext.dart';
 import '../../providers/cycle_provider.dart';
 import '../../providers/student_provider.dart';
@@ -68,23 +67,44 @@ class HistoryScreen extends ConsumerWidget {
                       itemBuilder: (context, i) {
                         final cycle = allCycles[i];
                         final color = studentColor(cycle.studentId);
+                        final name = studentName(cycle.studentId);
                         final start = DateTime.parse(cycle.startDate);
                         final end = cycle.endDate != null
                             ? DateTime.parse(cycle.endDate!)
                             : null;
                         final attended = cycle.archivedAttendedCount;
+                        final avatarTextColor =
+                            color.computeLuminance() > 0.6
+                                ? const Color(0xFF0F172A)
+                                : Colors.white;
 
                         return GlassCard(
                           glowColor: color.withValues(alpha: 0.1),
                           child: Row(
                             children: [
-                              // Colored left bar
+                              // ── Student avatar circle ──────────────────
                               Container(
-                                width: 4,
-                                height: 60,
+                                width: 44,
+                                height: 44,
                                 decoration: BoxDecoration(
-                                  color: color,
-                                  borderRadius: BorderRadius.circular(2),
+                                  color: color.withValues(alpha: 0.18),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: color.withValues(alpha: 0.6),
+                                    width: 1.8,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    name.isNotEmpty
+                                        ? name[0].toUpperCase()
+                                        : '?',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: avatarTextColor,
+                                    ),
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 14),
@@ -93,7 +113,7 @@ class HistoryScreen extends ConsumerWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      studentName(cycle.studentId),
+                                      name,
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
@@ -102,7 +122,9 @@ class HistoryScreen extends ConsumerWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      '${start.monthLabel}${end != null ? ' → ${end.monthLabel}' : ''}',
+                                      end != null
+                                          ? '${start.monthLabel} → ${end.monthLabel}'
+                                          : start.monthLabel,
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: context.secondaryText,
@@ -124,8 +146,8 @@ class HistoryScreen extends ConsumerWidget {
                                 children: [
                                   GestureDetector(
                                     onTap: () => ref
-                                        .read(
-                                            allArchivedCyclesProvider.notifier)
+                                        .read(allArchivedCyclesProvider
+                                            .notifier)
                                         .togglePaidStatus(cycle.id),
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
@@ -151,7 +173,8 @@ class HistoryScreen extends ConsumerWidget {
                                           Icon(
                                             cycle.isPaid
                                                 ? Icons.check_circle_rounded
-                                                : Icons.pending_actions_rounded,
+                                                : Icons
+                                                    .pending_actions_rounded,
                                             size: 14,
                                             color: cycle.isPaid
                                                 ? context.accent
@@ -210,10 +233,18 @@ class _EmptyHistory extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.history_rounded,
-            size: 64,
-            color: context.secondaryText.withValues(alpha: 0.3),
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: context.secondaryText.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.history_rounded,
+              size: 36,
+              color: context.secondaryText.withValues(alpha: 0.4),
+            ),
           ),
           const SizedBox(height: 16),
           Text(
@@ -226,7 +257,7 @@ class _EmptyHistory extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Closed cycles will appear here',
+            'Archive a billing cycle to see it here',
             style: TextStyle(
               fontSize: 12,
               color: context.secondaryText.withValues(alpha: 0.6),

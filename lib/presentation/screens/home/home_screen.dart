@@ -7,7 +7,6 @@ import '../../../core/theme/color_tokens.dart';
 import '../../providers/analytics_provider.dart';
 import '../../providers/student_provider.dart';
 import '../../providers/attendance_provider.dart';
-// removed unused imports
 import '../../widgets/metric_badge.dart';
 import '../../widgets/theme_toggle_button.dart';
 import '../../widgets/cycle_rollover_dialog.dart';
@@ -32,7 +31,7 @@ class HomeScreen extends ConsumerWidget {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -43,7 +42,7 @@ class HomeScreen extends ConsumerWidget {
                           children: [
                             Text('TuTracker',
                                 style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 22,
                                     fontWeight: FontWeight.w700,
                                     color: context.primaryText)),
                             const SizedBox(height: 4),
@@ -76,7 +75,7 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: 10),
                           MetricBadge(
-                            label: 'CLASSES',
+                            label: 'THIS MONTH',
                             value: '${analytics.totalClassesThisMonth}',
                             icon: Icons.school_outlined,
                             accent: context.accentBlue,
@@ -93,6 +92,7 @@ class HomeScreen extends ConsumerWidget {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
@@ -101,12 +101,15 @@ class HomeScreen extends ConsumerWidget {
             // ── Student Cards ──────────────────────────────────────────────
             students.isEmpty
                 ? SliverFillRemaining(child: _EmptyState())
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, i) => _StudentCard(
-                        studentId: students[i].id,
+                : SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, i) => _StudentCard(
+                          studentId: students[i].id,
+                        ),
+                        childCount: students.length,
                       ),
-                      childCount: students.length,
                     ),
                   ),
 
@@ -137,8 +140,13 @@ class _StudentCard extends ConsumerWidget {
     final avatarTextColor = avatarColor.computeLuminance() > 0.6
         ? const Color(0xFF0F172A)
         : Colors.white;
-    final perSession = student.monthlyFee / student.targetClasses;
+    final perSession = student.targetClasses > 0
+        ? student.monthlyFee / student.targetClasses
+        : 0.0;
     final earned = (perSession * attended);
+    final progress = student.targetClasses > 0
+        ? (attended / student.targetClasses).clamp(0.0, 1.0)
+        : 0.0;
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppConstants.spacingMD),
@@ -157,7 +165,7 @@ class _StudentCard extends ConsumerWidget {
               ]
             : [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 )
@@ -173,8 +181,8 @@ class _StudentCard extends ConsumerWidget {
             title: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 42,
+                  height: 42,
                   decoration: BoxDecoration(
                     color: avatarColor.withValues(alpha: 0.18),
                     shape: BoxShape.circle,
@@ -205,16 +213,31 @@ class _StudentCard extends ConsumerWidget {
                           color: context.primaryText,
                         ),
                       ),
+                      const SizedBox(height: 1),
                       Text(
-                        '${settings.currencySymbol}${student.monthlyFee.toStringAsFixed(0)}/mo · ${student.targetClasses} classes',
+                        student.subject != null && student.subject!.isNotEmpty
+                            ? student.subject!
+                            : '${settings.currencySymbol}${student.monthlyFee.toStringAsFixed(0)}/mo · ${student.targetClasses} classes',
                         style: TextStyle(
                           fontSize: 11,
                           color: context.secondaryText,
                         ),
                       ),
+                      const SizedBox(height: 6),
+                      // Progress bar
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: context.borderColor,
+                          color: avatarColor,
+                          minHeight: 4,
+                        ),
+                      ),
                     ],
                   ),
                 ),
+                const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -253,7 +276,7 @@ class _StudentCard extends ConsumerWidget {
                         Expanded(
                           child: OutlinedButton.icon(
                             icon: Icon(Icons.delete_rounded,
-                                size: 18, color: AppColors.error),
+                                size: 16, color: AppColors.error),
                             label: Text(
                               'Delete',
                               style: TextStyle(
@@ -262,6 +285,7 @@ class _StudentCard extends ConsumerWidget {
                                   fontWeight: FontWeight.w600),
                             ),
                             style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
                               side: BorderSide(
                                   color:
                                       AppColors.error.withValues(alpha: 0.3)),
@@ -279,11 +303,37 @@ class _StudentCard extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
+                        // Edit Button
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            icon: Icon(Icons.edit_outlined,
+                                size: 16, color: context.accentBlue),
+                            label: Text(
+                              'Edit',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: context.accentBlue,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              side: BorderSide(
+                                  color: context.accentBlue
+                                      .withValues(alpha: 0.3)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () =>
+                                context.push('/edit-student/$studentId'),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
                         // Archive Cycle Button
                         Expanded(
                           child: OutlinedButton.icon(
                             icon: Icon(Icons.refresh_rounded,
-                                size: 18, color: avatarColor),
+                                size: 16, color: avatarColor),
                             label: Text(
                               'Archive',
                               style: TextStyle(
@@ -292,6 +342,7 @@ class _StudentCard extends ConsumerWidget {
                                   fontWeight: FontWeight.w600),
                             ),
                             style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
                               side: BorderSide(
                                   color: avatarColor.withValues(alpha: 0.3)),
                               shape: RoundedRectangleBorder(
@@ -363,13 +414,13 @@ class _AttendanceList extends ConsumerWidget {
       final slotStates =
           attendance?.slotStates ?? List.filled(targetClasses, false);
 
-      // If the slot is currently unchecked, we check it with the selected date
-      // If it is ALREADY checked, we first uncheck it, then check it again with the new date
-      if (slotStates[index]) {
+      // Fix: check current state at the moment of the pick, not before
+      if (index < slotStates.length && slotStates[index]) {
+        // Already checked — uncheck first, then re-check with new date
         await notifier.toggleSlot(index); // uncheck
       }
-      await notifier.toggleSlot(index,
-          selectedDate: picked); // check with new date
+      // Check with selected date
+      await notifier.toggleSlot(index, selectedDate: picked);
     }
   }
 
@@ -379,23 +430,48 @@ class _AttendanceList extends ConsumerWidget {
     final slotStates =
         attendance?.slotStates ?? List.filled(targetClasses, false);
     final timestamps = attendance?.timestamps ?? [];
+    final notifier = ref.read(attendanceProvider(studentId).notifier);
+
+    final attendedCount = slotStates.where((s) => s).length;
 
     return Column(
-      children: List.generate(targetClasses, (i) {
-        final isChecked = i < slotStates.length && slotStates[i];
-        final ts = timestamps.where((t) => t.endsWith('|$i')).lastOrNull;
-        final iso = ts?.split('|').first;
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Mark all button (only show if not all checked)
+        if (attendedCount < targetClasses)
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: () => notifier.markAllAttended(targetClasses),
+              icon: Icon(Icons.done_all_rounded,
+                  size: 16, color: accentColor),
+              label: Text(
+                'Mark all',
+                style: TextStyle(fontSize: 12, color: accentColor),
+              ),
+              style: TextButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                minimumSize: Size.zero,
+              ),
+            ),
+          ),
+        ...List.generate(targetClasses, (i) {
+          final isChecked = i < slotStates.length && slotStates[i];
+          final ts = timestamps.where((t) => t.endsWith('|$i')).lastOrNull;
+          final iso = ts?.split('|').first;
 
-        return AttendanceRow(
-          index: i,
-          isChecked: isChecked,
-          timestamp: iso,
-          accentColor: accentColor,
-          onTapCalendar: () => _selectDate(context, ref, i),
-          onToggle: () =>
-              ref.read(attendanceProvider(studentId).notifier).toggleSlot(i),
-        );
-      }),
+          return AttendanceRow(
+            index: i,
+            isChecked: isChecked,
+            timestamp: iso,
+            accentColor: accentColor,
+            onTapCalendar: () => _selectDate(context, ref, i),
+            onToggle: () =>
+                ref.read(attendanceProvider(studentId).notifier).toggleSlot(i),
+          );
+        }),
+      ],
     );
   }
 }
@@ -408,18 +484,26 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.school_outlined,
-            size: 64,
-            color: context.secondaryText.withValues(alpha: 0.4),
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: context.accent.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.school_outlined,
+              size: 40,
+              color: context.accent.withValues(alpha: 0.7),
+            ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           Text(
             'No students yet',
             style: TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: context.secondaryText,
+              fontWeight: FontWeight.w700,
+              color: context.primaryText,
             ),
           ),
           const SizedBox(height: 8),
@@ -427,7 +511,7 @@ class _EmptyState extends StatelessWidget {
             'Tap + to add your first tuition profile',
             style: TextStyle(
                 fontSize: 13,
-                color: context.secondaryText.withValues(alpha: 0.6)),
+                color: context.secondaryText.withValues(alpha: 0.8)),
           ),
         ],
       ),

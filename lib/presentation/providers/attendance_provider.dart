@@ -29,12 +29,32 @@ class AttendanceNotifier extends StateNotifier<AttendanceLog?> {
   }
 
   Future<void> toggleSlot(int slotIndex, {DateTime? selectedDate}) async {
+    // Guard: if no log exists yet, skip silently
+    if (_repo.getLog(studentId) == null) return;
+
     // 1. Native haptic feedback
     await HapticService.medium();
 
     // 2. Persist and update state
-    final updated = await _repo.toggleSlot(studentId, slotIndex, selectedDate: selectedDate);
+    final updated =
+        await _repo.toggleSlot(studentId, slotIndex, selectedDate: selectedDate);
     state = updated;
+  }
+
+  Future<void> markAllAttended(int targetClasses) async {
+    final log = _repo.getLog(studentId);
+    if (log == null) return;
+
+    await HapticService.heavy();
+    final now = DateTime.now();
+    var current = log;
+
+    for (var i = 0; i < targetClasses; i++) {
+      if (i < current.slotStates.length && !current.slotStates[i]) {
+        current = await _repo.toggleSlot(studentId, i, selectedDate: now);
+      }
+    }
+    state = current;
   }
 
   List<DateTime> get attendedDates => _repo.getAttendedDates(studentId);

@@ -23,13 +23,14 @@ class StudentAdapter extends TypeAdapter<Student> {
       targetClasses: fields[3] as int,
       createdAt: fields[4] as String,
       avatarColorValue: fields[5] as int,
+      subject: fields[6] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Student obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class StudentAdapter extends TypeAdapter<Student> {
       ..writeByte(4)
       ..write(obj.createdAt)
       ..writeByte(5)
-      ..write(obj.avatarColorValue);
+      ..write(obj.avatarColorValue)
+      ..writeByte(6)
+      ..write(obj.subject);
   }
 
   @override

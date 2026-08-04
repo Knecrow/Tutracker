@@ -8,20 +8,20 @@ class AppColors {
 
   // ── Dark Mode ─────────────────────────────────────────────────────────────
   static const Color darkBackground = Color(0xFF0B0F19);
-  static const Color darkSurface = Color(0x08FFFFFF);      // rgba(255,255,255,0.03)
-  static const Color darkBorder = Color(0x14FFFFFF);       // rgba(255,255,255,0.08)
+  static const Color darkSurface = Color(0xFF161D2F);      // solid dark card surface
+  static const Color darkBorder = Color(0x20FFFFFF);       // rgba(255,255,255,0.13)
   static const Color darkAccentGreen = Color(0xFF10B981);  // neon emerald
   static const Color darkAccentBlue = Color(0xFF3B82F6);   // neon blue
   static const Color darkTextPrimary = Color(0xFFF1F5F9);
-  static const Color darkTextSecondary = Color(0xFF94A3B8); // Slate 400 (was 64748B)
+  static const Color darkTextSecondary = Color(0xFF94A3B8); // Slate 400
   static const Color darkCardGlow = Color(0x2010B981);     // green glow shadow
   static const Color darkBlueGlow = Color(0x203B82F6);     // blue glow shadow
-  static const Color darkDivider = Color(0x0DFFFFFF);
+  static const Color darkDivider = Color(0x1AFFFFFF);
 
   // ── Light Mode ────────────────────────────────────────────────────────────
-  static const Color lightBackground = Color(0xFFF8FAFC);
-  static const Color lightSurface = Color(0x080F172A);     // rgba(15,23,42,0.03)
-  static const Color lightBorder = Color(0x140F172A);      // rgba(15,23,42,0.08)
+  static const Color lightBackground = Color(0xFFF0F4F8);
+  static const Color lightSurface = Color(0xFFFFFFFF);     // solid white card surface
+  static const Color lightBorder = Color(0xFFE2E8F0);      // Slate 200
   static const Color lightAccentGreen = Color(0xFF059669); // flat emerald
   static const Color lightAccentBlue = Color(0xFF2563EB);  // flat blue
   static const Color lightTextPrimary = Color(0xFF0F172A);

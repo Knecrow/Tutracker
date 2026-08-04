@@ -24,6 +24,7 @@ class StudentRepository {
     required double monthlyFee,
     required int targetClasses,
     required int avatarColorValue,
+    String? subject,
   }) async {
     final id = _uuid.v4();
     final now = DateTime.now().toIso8601String();
@@ -35,6 +36,7 @@ class StudentRepository {
       targetClasses: targetClasses,
       createdAt: now,
       avatarColorValue: avatarColorValue,
+      subject: subject,
     );
     await _box.put(id, student);
 
