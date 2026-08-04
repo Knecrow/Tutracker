@@ -27,7 +27,6 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: AppColors.darkBorder),
         ),
       ),
       dividerColor: AppColors.darkDivider,
@@ -111,7 +110,6 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: AppColors.lightBorder),
         ),
       ),
       dividerColor: AppColors.lightDivider,

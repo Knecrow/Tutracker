@@ -63,7 +63,6 @@ class SettingsScreen extends ConsumerWidget {
                             decoration: BoxDecoration(
                               color: sel ? context.accent.withValues(alpha: 0.15) : context.elevated,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: sel ? context.accent : context.borderColor, width: sel ? 1.5 : 1),
                             ),
                             child: Center(
                               child: Text(sym, style: TextStyle(
@@ -139,7 +138,6 @@ class SettingsScreen extends ConsumerWidget {
               // ── Danger Zone ──────────────────────────────────────────────
               GlassCard(
                 glowColor: AppColors.error.withValues(alpha: 0.08),
-                border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

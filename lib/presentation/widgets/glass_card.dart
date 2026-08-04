@@ -36,7 +36,7 @@ class TCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: radius,
-        border: border ?? Border.all(color: context.borderColor, width: 1),
+        border: border,
         boxShadow: isDark && glow != null
             ? [BoxShadow(color: glow, blurRadius: 20, spreadRadius: -4, offset: const Offset(0, 6))]
             : [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 12, offset: const Offset(0, 3))],

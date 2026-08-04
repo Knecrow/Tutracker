@@ -143,7 +143,6 @@ class _StatChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: color.withValues(alpha: context.isDark ? 0.1 : 0.07),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Row(
           children: [
@@ -202,7 +201,6 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
       decoration: BoxDecoration(
         color: context.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: context.borderColor),
         boxShadow: isDark
             ? [BoxShadow(color: color.withValues(alpha: 0.06), blurRadius: 16, offset: const Offset(0, 4))]
             : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 3))],
@@ -515,7 +513,6 @@ class _ActionBtn extends StatelessWidget {
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: color.withValues(alpha: 0.2)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
