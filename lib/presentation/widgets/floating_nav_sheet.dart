@@ -61,15 +61,23 @@ class _FloatingNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDark;
-    const orangeAccent = Color(0xFFFF8C00); // Warm Sunset Orange
+    const orangeAccent = Color(0xFFFF9800); // Samsung One UI Warm Amber
     final navBg = isDark ? AppColors.darkSurface : AppColors.lightSurface;
     final bottomPad = MediaQuery.of(context).padding.bottom;
 
     return Container(
-      height: 68 + bottomPad,
-      padding: EdgeInsets.only(bottom: bottomPad, left: 12, right: 12, top: 0),
+      height: 72 + bottomPad,
+      padding: EdgeInsets.only(bottom: bottomPad, left: 16, right: 16, top: 4),
       decoration: BoxDecoration(
         color: navBg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(26)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.06),
+            blurRadius: 16,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -78,12 +86,12 @@ class _FloatingNavBar extends StatelessWidget {
           _NavItem(icon: AppShell._icons[0], label: AppShell._labels[0], selected: selectedIndex == 0, onTap: () => onTap(0)),
           _NavItem(icon: AppShell._icons[1], label: AppShell._labels[1], selected: selectedIndex == 1, onTap: () => onTap(1)),
 
-          // ── Centre FAB (Warm Sunset Orange) ──────────────────────────────
+          // ── Samsung One UI Center FAB ────────────────────────────────────
           GestureDetector(
             onTap: onAdd,
             child: Container(
-              width: 50,
-              height: 50,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: AppColors.orangeGradient,
@@ -116,33 +124,33 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const orangeAccent = Color(0xFFFF8C00); // Warm Sunset Orange active highlight
+    const orangeAccent = Color(0xFFFF9800); // Samsung One UI Warm Amber
 
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
-        width: 60,
+        width: 64,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeOut,
-              width: 38,
-              height: 28,
+              width: 44,
+              height: 30,
               decoration: BoxDecoration(
-                color: selected ? orangeAccent.withValues(alpha: 0.16) : Colors.transparent,
-                borderRadius: BorderRadius.circular(10),
+                color: selected ? orangeAccent.withValues(alpha: 0.18) : Colors.transparent,
+                borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(icon, size: 19, color: selected ? orangeAccent : context.secondaryText),
+              child: Icon(icon, size: 20, color: selected ? orangeAccent : context.secondaryText),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 3),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),
               style: TextStyle(
-                fontSize: 10,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                fontSize: 11,
+                fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
                 color: selected ? orangeAccent : context.secondaryText,
               ),
               child: Text(label),

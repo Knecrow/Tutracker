@@ -4,16 +4,12 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/extensions/context_ext.dart';
 import '../../../core/theme/color_tokens.dart';
-import '../../../core/haptics/haptic_service.dart';
 import '../../providers/student_provider.dart';
 import '../../providers/attendance_provider.dart';
 import '../../providers/settings_provider.dart';
-import '../../providers/cycle_provider.dart';
 import '../../providers/analytics_provider.dart';
 import '../../widgets/cycle_rollover_dialog.dart';
 import '../../widgets/delete_student_dialog.dart';
-import '../../widgets/app_logo.dart';
-import '../../../core/theme/theme_provider.dart';
 import '../../../data/models/student.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -24,107 +20,148 @@ class HomeScreen extends ConsumerWidget {
     final students = ref.watch(studentsProvider);
     final analytics = ref.watch(analyticsProvider);
     final settings = ref.watch(settingsProvider);
-    final isDark = context.isDark;
-    final accent = context.accent;
 
     return Scaffold(
-      backgroundColor: context.background,
-      body: CustomScrollView(
-        slivers: [
-          // ── Header ─────────────────────────────────────────────────────
-          SliverToBoxAdapter(
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'TuTracker',
-                                style: TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w800,
-                                  color: context.primaryText,
-                                  letterSpacing: -0.8,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Theme toggle
-                        GestureDetector(
-                          onTap: () => ref.read(themeProvider.notifier).toggle(),
-                          child: Container(
-                            width: 38,
-                            height: 38,
-                            decoration: BoxDecoration(
-                              color: context.elevated,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Icon(
-                              isDark ? Icons.wb_sunny_rounded : Icons.nights_stay_rounded,
-                              size: 18,
-                              color: accent,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // ── Summary Strip ─────────────────────────────────────
-                    Row(
-                      children: [
-                        _StatChip(
-                          label: 'Students',
-                          value: '${students.length}',
-                          icon: Icons.people_alt_rounded,
-                          color: accent,
-                        ),
-                        const SizedBox(width: 10),
-                        _StatChip(
-                          label: 'Pending',
-                          value: '${settings.currencySymbol}${analytics.totalPendingEarnings.toStringAsFixed(0)}',
-                          icon: Icons.account_balance_wallet_rounded,
-                          color: context.accentGreen,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-            ),
+      backgroundColor: AppColors.headerBackground,
+      body: Stack(
+        children: [
+          // ── Steel Blue Header Background ──────────────────────────────
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 280,
+            child: Container(color: AppColors.headerBackground),
           ),
+          CustomScrollView(
+            slivers: [
+              // ── Header Area (Deep Steel Blue) ────────────────────────
+              SliverToBoxAdapter(
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(22, 20, 22, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Welcome Back!',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.headerTextSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    'TuTracker Overview',
+                                    style: TextStyle(
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.w900,
+                                      color: AppColors.headerTextPrimary,
+                                      letterSpacing: -0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
 
-          // ── Student List ────────────────────────────────────────────────
-          students.isEmpty
-              ? SliverFillRemaining(child: _EmptyState())
-              : SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, i) => _StudentTile(student: students[i]),
-                      childCount: students.length,
+                        // ── Summary Cards (Steel Blue Cards) ──────────────
+                        Row(
+                          children: [
+                            _StatChip(
+                              label: 'Active Students',
+                              value: '${students.length}',
+                              icon: Icons.people_alt_rounded,
+                              color: AppColors.avatarPalette[0],
+                            ),
+                            const SizedBox(width: 12),
+                            _StatChip(
+                              label: 'Pending Fees',
+                              value: '${settings.currencySymbol}${analytics.totalPendingEarnings.toStringAsFixed(0)}',
+                              icon: Icons.account_balance_wallet_rounded,
+                              color: AppColors.avatarPalette[1],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
+              ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              // ── Main Content Sheet (Curved Icy Blue Sheet Container) ───
+              SliverToBoxAdapter(
+                child: Container(
+                  constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height - 240,
+                  ),
+                  decoration: const BoxDecoration(
+                    gradient: AppColors.sheetGradient,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Students & Attendance',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.sheetTextPrimary,
+                              ),
+                            ),
+                            Text(
+                              '${students.length} Total',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.sheetTextSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      students.isEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 60),
+                              child: _EmptyState(),
+                            )
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              padding: const EdgeInsets.symmetric(horizontal: 18),
+                              itemCount: students.length,
+                              itemBuilder: (context, i) => _StudentTile(student: students[i]),
+                            ),
+                      const SizedBox(height: 100),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 }
 
-// ── Stat Chip ─────────────────────────────────────────────────────────────────
+// ── Stat Chip (Samsung One UI Solid Grouped Card) ───────────────────────────────
 class _StatChip extends StatelessWidget {
   const _StatChip({required this.label, required this.value, required this.icon, required this.color});
   final String label;
@@ -136,28 +173,29 @@ class _StatChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: context.isDark ? 0.1 : 0.07),
-          borderRadius: BorderRadius.circular(16),
+          color: AppColors.headerSurface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.headerBorder, width: 1),
         ),
         child: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8),
+                color: color.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, size: 16, color: color),
+              child: Icon(icon, size: 18, color: color),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: TextStyle(fontSize: 10, color: context.secondaryText)),
-                Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: color)),
+                Text(label, style: const TextStyle(fontSize: 11, color: AppColors.headerTextSecondary, fontWeight: FontWeight.w500)),
+                Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.headerTextPrimary)),
               ],
             ),
           ],
@@ -167,7 +205,7 @@ class _StatChip extends StatelessWidget {
   }
 }
 
-// ── Student Tile ──────────────────────────────────────────────────────────────
+// ── Student Tile (Samsung One UI Solid 26px Squircle) ─────────────────────────
 class _StudentTile extends ConsumerStatefulWidget {
   const _StudentTile({required this.student});
   final Student student;
@@ -178,6 +216,7 @@ class _StudentTile extends ConsumerStatefulWidget {
 
 class _StudentTileState extends ConsumerState<_StudentTile> {
   bool _expanded = false;
+  bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -191,116 +230,133 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
     final progress = total > 0 ? (attended / total).clamp(0.0, 1.0) : 0.0;
     final perSession = total > 0 ? student.monthlyFee / total : 0.0;
     final earned = perSession * attended;
-    final isDark = context.isDark;
 
-    return GestureDetector(
-      onTap: () => setState(() => _expanded = !_expanded),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        decoration: BoxDecoration(
-          color: context.surface,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: isDark
-              ? [BoxShadow(color: color.withValues(alpha: 0.12), blurRadius: 16, offset: const Offset(0, 4))]
-              : [BoxShadow(color: color.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, 3))],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ── Card Header (Colored Tinted Section) ──────────────────────
-            Container(
-              decoration: BoxDecoration(
-                color: Color.alphaBlend(
-                  color.withValues(alpha: isDark ? 0.16 : 0.09),
-                  context.surface,
-                ),
-                borderRadius: _expanded
-                    ? const BorderRadius.vertical(top: Radius.circular(20))
-                    : BorderRadius.circular(20),
+    return AnimatedScale(
+      scale: _isPressed ? 0.98 : 1.0,
+      duration: const Duration(milliseconds: 140),
+      curve: Curves.easeOutCubic,
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        onTap: () => setState(() => _expanded = !_expanded),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: AppColors.sheetSurface,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: AppColors.sheetBorder, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  // Avatar
-                  Container(
-                    width: 46,
-                    height: 46,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Center(
-                      child: Text(
-                        student.name[0].toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: color,
-                        ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    // Circular Avatar with Status Ring
+                    Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: color.withValues(alpha: 0.18),
+                        border: Border.all(color: color, width: 2),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  // Info
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(student.name,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: context.primaryText,
-                            )),
-                        const SizedBox(height: 2),
-                        Text(
-                          student.subject?.isNotEmpty == true
-                              ? student.subject!
-                              : '${settings.currencySymbol}${student.monthlyFee.toStringAsFixed(0)}/mo',
-                          style: TextStyle(fontSize: 12, color: context.secondaryText),
-                        ),
-                        const SizedBox(height: 8),
-                        // Progress bar
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: progress,
-                            minHeight: 5,
-                            backgroundColor: context.borderColor,
-                            valueColor: AlwaysStoppedAnimation(color),
+                      child: Center(
+                        child: Text(
+                          student.name[0].toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: color,
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  // Counter + chevron
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        '$attended/$total',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
+                    const SizedBox(width: 14),
+                    // Name & Subject
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            student.name,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.sheetTextPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            student.subject?.isNotEmpty == true
+                                ? student.subject!
+                                : '${settings.currencySymbol}${student.monthlyFee.toStringAsFixed(0)}/mo',
+                            style: const TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary),
+                          ),
+                          const SizedBox(height: 6),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: progress,
+                              minHeight: 4,
+                              backgroundColor: AppColors.sheetBorder,
+                              valueColor: AlwaysStoppedAnimation(color),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+
+                    // ── Vibrant Action Pill Button (Matches User Mockup 'Pay Now' Pill) ──
+                    GestureDetector(
+                      onTap: () => setState(() => _expanded = !_expanded),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
                           color: color,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.35),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '$attended/$total',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              _expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ],
                         ),
                       ),
-                      Text(
-                        '${settings.currencySymbol}${earned.toStringAsFixed(0)}',
-                        style: TextStyle(fontSize: 11, color: context.secondaryText),
-                      ),
-                      const SizedBox(height: 4),
-                      AnimatedRotation(
-                        turns: _expanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Icon(Icons.expand_more_rounded, size: 18, color: context.secondaryText),
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
-            ),
 
           // ── Expanded Panel ──────────────────────────────────────────
           AnimatedSize(
@@ -335,7 +391,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
         ],
       ),
     ),
-  );
+  ),
+);
   }
 }
 
@@ -362,7 +419,7 @@ class _AttendanceGrid extends ConsumerWidget {
           children: [
             Text(
               'Attendance',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: context.secondaryText),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.sheetTextSecondary),
             ),
             if (attendedCount < targetClasses)
               GestureDetector(
@@ -388,9 +445,13 @@ class _AttendanceGrid extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: isChecked
-                      ? accentColor.withValues(alpha: context.isDark ? 0.08 : 0.05)
-                      : context.elevated.withValues(alpha: 0.5),
+                      ? accentColor.withValues(alpha: 0.15)
+                      : AppColors.sheetBorder.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isChecked ? accentColor.withValues(alpha: 0.3) : AppColors.sheetBorder.withValues(alpha: 0.6),
+                    width: 1,
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -400,7 +461,7 @@ class _AttendanceGrid extends ConsumerWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: isChecked ? context.primaryText : context.secondaryText,
+                        color: isChecked ? AppColors.sheetTextPrimary : AppColors.sheetTextSecondary,
                       ),
                     ),
                     if (isChecked && dt != null) ...[
@@ -429,13 +490,14 @@ class _AttendanceGrid extends ConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: context.surface,
+                          color: AppColors.sheetSurface,
                           borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppColors.sheetBorder, width: 1),
                         ),
                         child: Icon(
                           Icons.calendar_month_rounded,
                           size: 18,
-                          color: isChecked ? accentColor : context.secondaryText,
+                          color: isChecked ? accentColor : AppColors.sheetTextSecondary,
                         ),
                       ),
                     ),
@@ -446,6 +508,9 @@ class _AttendanceGrid extends ConsumerWidget {
                       value: isChecked,
                       activeThumbColor: accentColor,
                       activeTrackColor: accentColor.withValues(alpha: 0.3),
+                      inactiveTrackColor: Colors.grey.withValues(alpha: 0.4),
+                      inactiveThumbColor: Colors.white,
+                      trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       onChanged: (val) {
                         if (val) {
@@ -501,7 +566,7 @@ class _ActionRow extends ConsumerWidget {
         _ActionBtn(
           icon: Icons.delete_outline_rounded,
           label: 'Delete',
-          color: const Color(0xFFEF4444), // Always Crimson Red
+          color: const Color(0xFFEF4444),
           onTap: () => showDialog(
             context: context,
             builder: (_) => DeleteStudentDialog(studentId: student.id, studentName: student.name),
@@ -511,14 +576,14 @@ class _ActionRow extends ConsumerWidget {
         _ActionBtn(
           icon: Icons.edit_outlined,
           label: 'Edit',
-          color: const Color(0xFFFF8C00), // Always Sunset Orange
+          color: const Color(0xFFFF8C00),
           onTap: () => context.push('/edit-student/${student.id}'),
         ),
         const SizedBox(width: 8),
         _ActionBtn(
           icon: Icons.refresh_rounded,
           label: 'New cycle',
-          color: const Color(0xFF10B981), // Always Emerald Green
+          color: const Color(0xFF10B981),
           onTap: () => showDialog(
             context: context,
             builder: (_) => CycleRolloverDialog(
@@ -550,8 +615,8 @@ class _ActionBtn extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 9),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: context.isDark ? 0.20 : 0.14),
-            borderRadius: BorderRadius.circular(12),
+            color: color.withValues(alpha: 0.16),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

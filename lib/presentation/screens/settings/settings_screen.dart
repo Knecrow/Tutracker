@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/extensions/context_ext.dart';
 import '../../../core/theme/color_tokens.dart';
 import '../../../core/haptics/haptic_service.dart';
 import '../../providers/settings_provider.dart';
 import '../../providers/analytics_provider.dart';
-import '../../widgets/glass_card.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -18,174 +16,405 @@ class SettingsScreen extends ConsumerWidget {
     final currencies = ['৳', '\$', '€', '£', '¥', '₹', '₱'];
 
     return Scaffold(
-      backgroundColor: context.background,
-      body: SafeArea(
-        bottom: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 100),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Settings', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800,
-                        color: context.primaryText, letterSpacing: -0.8)),
-                    const SizedBox(height: 4),
-                    Text('App preferences', style: TextStyle(fontSize: 13, color: context.secondaryText)),
-                  ],
-                ),
-              ),
-
-              // ── Currency ─────────────────────────────────────────────────
-              GlassCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _CardLabel('Currency', Icons.monetization_on_rounded, context.accent),
-                    const SizedBox(height: 4),
-                    Text('Symbol used across earnings displays',
-                        style: TextStyle(fontSize: 12, color: context.secondaryText, height: 1.4)),
-                    const SizedBox(height: 14),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: currencies.map((sym) {
-                        final sel = settings.currencySymbol == sym;
-                        return GestureDetector(
-                          onTap: () { HapticService.selection(); notifier.setCurrencySymbol(sym); },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 180),
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: sel ? context.accent.withValues(alpha: 0.15) : context.elevated,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Center(
-                              child: Text(sym, style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: sel ? FontWeight.w800 : FontWeight.w500,
-                                  color: sel ? context.accent : context.secondaryText)),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              ),
-
-              // ── Preferences ──────────────────────────────────────────────
-              GlassCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _CardLabel('Preferences', Icons.tune_rounded, context.accentBlue),
-                    const SizedBox(height: 12),
-                    Row(
+      backgroundColor: AppColors.headerBackground,
+      body: Stack(
+        children: [
+          // ── Steel Blue Header Background ──────────────────────────────
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 280,
+            child: Container(color: AppColors.headerBackground),
+          ),
+          CustomScrollView(
+            slivers: [
+              // ── Header Area (Deep Steel Blue) ────────────────────────
+              SliverToBoxAdapter(
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(22, 20, 22, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        Text(
+                          'APP PREFERENCES',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.headerTextSecondary,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Settings',
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.headerTextPrimary,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // ── Summary Cards (Steel Blue Cards) ──────────────
+                        Row(
+                          children: [
+                            _HeaderStatChip(
+                              label: 'Active Currency',
+                              value: settings.currencySymbol,
+                              icon: Icons.monetization_on_rounded,
+                              color: AppColors.avatarPalette[0],
+                            ),
+                            const SizedBox(width: 12),
+                            _HeaderStatChip(
+                              label: 'Version',
+                              value: 'v1.1.0',
+                              icon: Icons.info_outline_rounded,
+                              color: AppColors.darkAccentBlue,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // ── Main Content Sheet (Curved Icy Blue Sheet Container) ───
+              SliverToBoxAdapter(
+                child: Container(
+                  constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height - 240,
+                  ),
+                  decoration: const BoxDecoration(
+                    gradient: AppColors.sheetGradient,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 24, 18, 100),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ── Currency Selection Card ───────────────────────
+                        _SheetSectionCard(
+                          title: 'Currency Symbol',
+                          subtitle: 'Symbol used across earnings displays',
+                          icon: Icons.attach_money_rounded,
+                          iconColor: AppColors.darkAccent,
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: currencies.map((sym) {
+                              final sel = settings.currencySymbol == sym;
+                              return GestureDetector(
+                                onTap: () {
+                                  HapticService.selection();
+                                  notifier.setCurrencySymbol(sym);
+                                },
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 180),
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: sel ? AppColors.darkAccent.withValues(alpha: 0.18) : AppColors.sheetBorder.withValues(alpha: 0.4),
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: sel ? AppColors.darkAccent : Colors.transparent,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      sym,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: sel ? FontWeight.w900 : FontWeight.w600,
+                                        color: sel ? AppColors.darkAccent : AppColors.sheetTextSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // ── Preferences Card ──────────────────────────────
+                        _SheetSectionCard(
+                          title: 'Preferences',
+                          subtitle: 'Haptics & feedback options',
+                          icon: Icons.tune_rounded,
+                          iconColor: AppColors.darkAccentBlue,
+                          child: Row(
                             children: [
-                              Text('Haptic Feedback',
-                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.primaryText)),
-                              Text('Vibration on interactions',
-                                  style: TextStyle(fontSize: 11, color: context.secondaryText)),
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Haptic Feedback',
+                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.sheetTextPrimary),
+                                    ),
+                                    SizedBox(height: 2),
+                                    Text(
+                                      'Vibration response on tap interactions',
+                                      style: TextStyle(fontSize: 11, color: AppColors.sheetTextSecondary),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Switch.adaptive(
+                                value: settings.hapticsEnabled,
+                                activeThumbColor: AppColors.darkAccent,
+                                activeTrackColor: AppColors.darkAccent.withValues(alpha: 0.3),
+                                onChanged: (v) {
+                                  HapticService.light();
+                                  notifier.setHapticsEnabled(v);
+                                },
+                              ),
                             ],
                           ),
                         ),
-                        Switch.adaptive(
-                          value: settings.hapticsEnabled,
-                          activeThumbColor: context.accent,
-                          activeTrackColor: context.accent.withValues(alpha: 0.3),
-                          onChanged: (v) { HapticService.light(); notifier.setHapticsEnabled(v); },
+                        const SizedBox(height: 16),
+
+                        // ── About TuTracker Card ──────────────────────────
+                        _SheetSectionCard(
+                          title: 'About TuTracker',
+                          subtitle: 'Local organizer for private tutors',
+                          icon: Icons.auto_awesome_rounded,
+                          iconColor: AppColors.darkAccentGreen,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'A locally-saved organizer for private tutors to track monthly attendance, target classes, and salary.',
+                                style: TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary, height: 1.5),
+                              ),
+                              const SizedBox(height: 14),
+                              const Divider(color: AppColors.sheetBorder),
+                              const SizedBox(height: 10),
+                              _InfoRow(label: 'Version', value: '1.1.0'),
+                              const SizedBox(height: 8),
+                              _InfoRow(label: 'Storage', value: 'Hive (Local)'),
+                              const SizedBox(height: 8),
+                              _InfoRow(
+                                label: 'Lifetime Earnings',
+                                value: '${settings.currencySymbol}${analytics.lifetimeEarnings.toStringAsFixed(0)}',
+                                valueColor: AppColors.darkAccentGreen,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // ── Danger Zone Card ──────────────────────────────
+                        _SheetSectionCard(
+                          title: 'Danger Zone',
+                          subtitle: 'Permanent data options',
+                          icon: Icons.warning_amber_rounded,
+                          iconColor: AppColors.error,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Permanently deletes all students, cycles, and attendance records from local storage.',
+                                style: TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary, height: 1.4),
+                              ),
+                              const SizedBox(height: 16),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.error,
+                                    foregroundColor: Colors.white,
+                                    minimumSize: const Size(double.infinity, 46),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                    elevation: 0,
+                                  ),
+                                  onPressed: () => showDialog(
+                                    context: context,
+                                    builder: (dc) => _ConfirmResetDialog(notifier: notifier, dialogContext: dc),
+                                  ),
+                                  child: const Text(
+                                    'Reset All Data',
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-
-              // ── About ────────────────────────────────────────────────────
-              GlassCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _CardLabel('About TuTracker', Icons.info_outline_rounded, context.accentGreen),
-                    const SizedBox(height: 12),
-                    Text(
-                      'A locally-saved organizer for private tutors to track monthly attendance, target classes, and salary.',
-                      style: TextStyle(fontSize: 12, color: context.secondaryText, height: 1.5),
-                    ),
-                    const SizedBox(height: 14),
-                    Divider(color: context.borderColor),
-                    const SizedBox(height: 10),
-                    _Row('Version', '1.1.0', context),
-                    const SizedBox(height: 8),
-                    _Row('Storage', 'Hive (Local)', context),
-                    const SizedBox(height: 8),
-                    _Row('Lifetime Earnings',
-                        '${settings.currencySymbol}${analytics.lifetimeEarnings.toStringAsFixed(0)}', context,
-                        valueColor: context.accentGreen),
-                  ],
-                ),
-              ),
-
-              // ── Danger Zone ──────────────────────────────────────────────
-              GlassCard(
-                glowColor: AppColors.error.withValues(alpha: 0.08),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Row(
-                      children: [
-                        Icon(Icons.warning_amber_rounded, size: 18, color: AppColors.error),
-                        SizedBox(width: 8),
-                        Text('Danger Zone', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.error)),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Permanently deletes all students, cycles, and attendance records.',
-                      style: TextStyle(fontSize: 12, color: context.secondaryText, height: 1.4),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.error,
-                          minimumSize: const Size(double.infinity, 46),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        onPressed: () => showDialog(
-                          context: context,
-                          builder: (dc) => _ConfirmResetDialog(notifier: notifier, dialogContext: dc),
-                        ),
-                        child: const Text('Reset All Data', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Header Stat Chip ────────────────────────────────────────────────────────
+class _HeaderStatChip extends StatelessWidget {
+  const _HeaderStatChip({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: AppColors.headerSurface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.headerBorder, width: 1),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, size: 18, color: color),
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(fontSize: 11, color: AppColors.headerTextSecondary, fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  value,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.headerTextPrimary),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _Row(String label, String value, BuildContext context, {Color? valueColor}) {
+// ── Sheet Section Card (Matches _StudentTile Container Aesthetic) ────────────
+class _SheetSectionCard extends StatelessWidget {
+  const _SheetSectionCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.iconColor,
+    required this.child,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color iconColor;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppColors.sheetSurface,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: AppColors.sheetBorder, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, size: 16, color: iconColor),
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.sheetTextPrimary,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: AppColors.sheetTextSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({required this.label, required this.value, this.valueColor});
+
+  final String label;
+  final String value;
+  final Color? valueColor;
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(fontSize: 12, color: context.secondaryText)),
-        Text(value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-            color: valueColor ?? context.primaryText)),
+        Text(label, style: const TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary)),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: valueColor ?? AppColors.sheetTextPrimary,
+          ),
+        ),
       ],
     );
   }
@@ -199,19 +428,26 @@ class _ConfirmResetDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
-      backgroundColor: context.surface,
+      backgroundColor: AppColors.sheetSurface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide.none),
-      title: Row(children: [
-        const Icon(Icons.warning_amber_rounded, color: AppColors.error, size: 22),
-        const SizedBox(width: 8),
-        Text('Clear all data?', style: TextStyle(color: context.primaryText, fontWeight: FontWeight.w700, fontSize: 16)),
-      ]),
-      content: Text('This cannot be undone. All students and records will be permanently deleted.',
-          style: TextStyle(fontSize: 13, color: context.secondaryText, height: 1.4)),
+      title: const Row(
+        children: [
+          Icon(Icons.warning_amber_rounded, color: AppColors.error, size: 22),
+          SizedBox(width: 8),
+          Text(
+            'Clear all data?',
+            style: TextStyle(color: AppColors.sheetTextPrimary, fontWeight: FontWeight.w700, fontSize: 16),
+          ),
+        ],
+      ),
+      content: const Text(
+        'This cannot be undone. All students and records will be permanently deleted.',
+        style: TextStyle(fontSize: 13, color: AppColors.sheetTextSecondary, height: 1.4),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogContext),
-          child: Text('Cancel', style: TextStyle(color: context.secondaryText)),
+          child: const Text('Cancel', style: TextStyle(color: AppColors.sheetTextSecondary)),
         ),
         TextButton(
           onPressed: () async {
@@ -227,12 +463,4 @@ class _ConfirmResetDialog extends ConsumerWidget {
       ],
     );
   }
-}
-
-Widget _CardLabel(String title, IconData icon, Color color) {
-  return Row(children: [
-    Icon(icon, size: 16, color: color),
-    const SizedBox(width: 8),
-    Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: color)),
-  ]);
 }

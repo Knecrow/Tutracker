@@ -38,9 +38,7 @@ class CycleRolloverDialog extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.all(AppConstants.spacingLG),
           decoration: BoxDecoration(
-            color: context.isDark
-                ? const Color(0xFF131929)
-                : const Color(0xFFF0F4F8),
+            color: context.surface,
             borderRadius: BorderRadius.circular(AppConstants.radiusXL),
           ),
           child: Column(

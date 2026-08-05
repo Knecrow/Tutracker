@@ -81,22 +81,12 @@ class _EditStudentSheetState extends ConsumerState<EditStudentSheet> {
     final isDark = context.isDark;
     final settings = ref.watch(settingsProvider);
 
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(
-        top: Radius.circular(AppConstants.radiusXL),
-      ),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: context.themeExt.glassBlur * 1.5,
-          sigmaY: context.themeExt.glassBlur * 1.5,
+    return Container(
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(28),
         ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: (isDark ? const Color(0xFF131929) : const Color(0xFFF8FAFC))
-                .withValues(alpha: 0.97),
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(AppConstants.radiusXL),
-            ),
             border: Border.all(color: context.borderColor),
           ),
           padding: EdgeInsets.only(
@@ -323,9 +313,7 @@ class _EditStudentSheetState extends ConsumerState<EditStudentSheet> {
               ),
             ),
           ),
-        ),
-      ),
-    );
+        );
   }
 }
 

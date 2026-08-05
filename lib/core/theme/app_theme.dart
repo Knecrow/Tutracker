@@ -26,7 +26,7 @@ class AppTheme {
         color: AppColors.darkSurface,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(26),
         ),
       ),
       dividerColor: AppColors.darkDivider,
@@ -40,17 +40,17 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.darkElevated,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,
         ),
         hintStyle: const TextStyle(color: AppColors.darkTextSecondary, fontSize: 14),
@@ -60,29 +60,29 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.darkAccent,
           foregroundColor: Colors.white,
-          minimumSize: const Size(double.infinity, 52),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          minimumSize: const Size(double.infinity, 54),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 0,
-          textStyle: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
+          textStyle: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700),
         ),
       ),
       sliderTheme: const SliderThemeData(
         activeTrackColor: AppColors.darkAccent,
         thumbColor: AppColors.darkAccent,
         inactiveTrackColor: AppColors.darkBorder,
-        overlayColor: Color(0x2200D2FF),
+        overlayColor: Color(0x221F85ED),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.darkElevated,
         side: BorderSide.none,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         labelStyle: const TextStyle(color: AppColors.darkTextPrimary, fontSize: 12),
       ),
       extensions: const <ThemeExtension<dynamic>>[
         AppThemeExtension(
-          glassBlur: 10.0,
+          glassBlur: 0.0,
           accentGlow: true,
-          cardGlowColor: Color(0x18A78BFA),
+          cardGlowColor: Color(0x181F85ED),
         ),
       ],
     );
@@ -109,7 +109,7 @@ class AppTheme {
         color: AppColors.lightSurface,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(26),
         ),
       ),
       dividerColor: AppColors.lightDivider,
@@ -123,17 +123,17 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.lightElevated,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,
         ),
         hintStyle: const TextStyle(color: AppColors.lightTextSecondary, fontSize: 14),
@@ -143,22 +143,22 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.lightAccent,
           foregroundColor: Colors.white,
-          minimumSize: const Size(double.infinity, 52),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          minimumSize: const Size(double.infinity, 54),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 0,
-          textStyle: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600),
+          textStyle: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700),
         ),
       ),
       sliderTheme: const SliderThemeData(
         activeTrackColor: AppColors.lightAccent,
         thumbColor: AppColors.lightAccent,
         inactiveTrackColor: AppColors.lightBorder,
-        overlayColor: Color(0x220077B6),
+        overlayColor: Color(0x22126CD6),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.lightElevated,
         side: BorderSide.none,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         labelStyle: const TextStyle(color: AppColors.lightTextPrimary, fontSize: 12),
       ),
       extensions: const <ThemeExtension<dynamic>>[

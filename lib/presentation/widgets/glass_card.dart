@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/extensions/context_ext.dart';
 
-/// Core reusable card. Clean, minimal, no backdrop blur in light mode.
-class TCard extends StatelessWidget {
+/// Core reusable card with Samsung One UI spring touch animations.
+class TCard extends StatefulWidget {
   const TCard({
     super.key,
     required this.child,
@@ -25,45 +25,41 @@ class TCard extends StatelessWidget {
   final Border? border;
 
   @override
-  Widget build(BuildContext context) {
-    final radius = borderRadius ?? BorderRadius.circular(20);
-    final isDark = context.isDark;
-    final bg = color ?? context.surface;
-    final glow = glowColor;
+  State<TCard> createState() => _TCardState();
+}
 
-    return Container(
-      margin: margin ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: radius,
-        border: border,
-        boxShadow: isDark
-            ? [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.35),
-                  blurRadius: 16,
-                  offset: const Offset(0, 5),
-                ),
-                if (glow != null)
-                  BoxShadow(color: glow, blurRadius: 20, spreadRadius: -4, offset: const Offset(0, 6)),
-              ]
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.10),
-                  blurRadius: 14,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: radius,
-        child: InkWell(
-          onTap: onTap,
+class _TCardState extends State<TCard> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = widget.borderRadius ?? BorderRadius.circular(26);
+    final bg = widget.color ?? context.surface;
+
+    return AnimatedScale(
+      scale: _isPressed ? 0.98 : 1.0,
+      duration: const Duration(milliseconds: 140),
+      curve: Curves.easeOutCubic,
+      child: Container(
+        margin: widget.margin ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          color: bg,
           borderRadius: radius,
-          child: Padding(
-            padding: padding ?? const EdgeInsets.all(16),
-            child: child,
+          border: widget.border,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: radius,
+          child: InkWell(
+            onTap: widget.onTap,
+            onTapDown: (_) => widget.onTap != null ? setState(() => _isPressed = true) : null,
+            onTapUp: (_) => widget.onTap != null ? setState(() => _isPressed = false) : null,
+            onTapCancel: () => widget.onTap != null ? setState(() => _isPressed = false) : null,
+            borderRadius: radius,
+            child: Padding(
+              padding: widget.padding ?? const EdgeInsets.all(16),
+              child: widget.child,
+            ),
           ),
         ),
       ),
