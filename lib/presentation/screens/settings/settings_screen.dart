@@ -200,7 +200,7 @@ class _ConfirmResetDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
       backgroundColor: context.surface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide(color: context.borderColor)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide.none),
       title: Row(children: [
         const Icon(Icons.warning_amber_rounded, color: AppColors.error, size: 22),
         const SizedBox(width: 8),

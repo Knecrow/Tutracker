@@ -61,7 +61,7 @@ class _FloatingNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDark;
-    final accent = context.accent;
+    const orangeAccent = Color(0xFFFF8C00); // Warm Sunset Orange
     final navBg = isDark ? AppColors.darkSurface : AppColors.lightSurface;
     final bottomPad = MediaQuery.of(context).padding.bottom;
 
@@ -78,24 +78,24 @@ class _FloatingNavBar extends StatelessWidget {
           _NavItem(icon: AppShell._icons[0], label: AppShell._labels[0], selected: selectedIndex == 0, onTap: () => onTap(0)),
           _NavItem(icon: AppShell._icons[1], label: AppShell._labels[1], selected: selectedIndex == 1, onTap: () => onTap(1)),
 
-          // ── Centre FAB ──────────────────────────────────────────────────
+          // ── Centre FAB (Warm Sunset Orange) ──────────────────────────────
           GestureDetector(
             onTap: onAdd,
             child: Container(
-              width: 48,
-              height: 48,
+              width: 50,
+              height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [accent, accent.withValues(alpha: 0.7)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: isDark
-                    ? [BoxShadow(color: accent.withValues(alpha: 0.35), blurRadius: 14, offset: const Offset(0, 4))]
-                    : [BoxShadow(color: accent.withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 4))],
+                gradient: AppColors.orangeGradient,
+                boxShadow: [
+                  BoxShadow(
+                    color: orangeAccent.withValues(alpha: isDark ? 0.45 : 0.3),
+                    blurRadius: 14,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: const Icon(Icons.add_rounded, color: Colors.white, size: 24),
+              child: const Icon(Icons.add_rounded, color: Colors.white, size: 26),
             ),
           ),
 
@@ -116,7 +116,8 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = context.accent;
+    const orangeAccent = Color(0xFFFF8C00); // Warm Sunset Orange active highlight
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -128,13 +129,13 @@ class _NavItem extends StatelessWidget {
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeOut,
-              width: 36,
+              width: 38,
               height: 28,
               decoration: BoxDecoration(
-                color: selected ? accent.withValues(alpha: 0.14) : Colors.transparent,
+                color: selected ? orangeAccent.withValues(alpha: 0.16) : Colors.transparent,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 19, color: selected ? accent : context.secondaryText),
+              child: Icon(icon, size: 19, color: selected ? orangeAccent : context.secondaryText),
             ),
             const SizedBox(height: 2),
             AnimatedDefaultTextStyle(
@@ -142,7 +143,7 @@ class _NavItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-                color: selected ? accent : context.secondaryText,
+                color: selected ? orangeAccent : context.secondaryText,
               ),
               child: Text(label),
             ),

@@ -35,7 +35,6 @@ class DeleteStudentDialog extends ConsumerWidget {
                 ? const Color(0xFF131929)
                 : const Color(0xFFF0F4F8)).withValues(alpha: 0.75),
             borderRadius: BorderRadius.circular(AppConstants.radiusXL),
-            border: Border.all(color: context.borderColor),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -75,7 +74,8 @@ class DeleteStudentDialog extends ConsumerWidget {
                     child: OutlinedButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: context.borderColor),
+                        side: BorderSide.none,
+                        backgroundColor: context.elevated,
                         minimumSize: const Size(0, 48),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppConstants.radiusMD),

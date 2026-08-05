@@ -1,7 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import '../../core/constants/app_constants.dart';
+import '../../data/models/student.dart';
+import '../../data/models/attendance_log.dart';
+import '../../data/models/billing_cycle.dart';
 import 'student_provider.dart';
+import 'cycle_provider.dart';
 
 class SettingsState {
   final String currencySymbol;
@@ -53,17 +57,20 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   Future<void> resetAllData() async {
-    // Clear all boxes
-    await Hive.box(AppConstants.studentsBox).clear();
-    await Hive.box(AppConstants.attendanceBox).clear();
-    await Hive.box(AppConstants.cyclesBox).clear();
+    // Clear typed Hive storage boxes cleanly
+    await Hive.box<Student>(AppConstants.studentsBox).clear();
+    await Hive.box<AttendanceLog>(AppConstants.attendanceBox).clear();
+    await Hive.box<BillingCycle>(AppConstants.cyclesBox).clear();
     await _box.clear();
 
     // Reload settings defaults
     _loadSettings();
 
-    // Reload students so the home screen clears immediately
+    // Reload all state notifiers & invalidate family providers immediately
     _ref.read(studentsProvider.notifier).load();
+    _ref.read(allArchivedCyclesProvider.notifier).reload();
+    _ref.invalidate(studentsProvider);
+    _ref.invalidate(allArchivedCyclesProvider);
   }
 }
 

@@ -1,54 +1,59 @@
 import 'package:flutter/material.dart';
 
+/// Color tokens extracted directly from the Ocean Cyan & Sunset Orange 3D design theme.
 class AppColors {
   AppColors._();
 
-  // ── Dark Mode ──────────────────────────────────────────────────────────────
-  static const Color darkBackground  = Color(0xFF0C0E1A); // deep navy-black
-  static const Color darkSurface     = Color(0xFF141727); // card surface
-  static const Color darkElevated    = Color(0xFF1C2038); // elevated elements
-  static const Color darkBorder      = Color(0xFF252B45); // subtle border
-  static const Color darkAccent      = Color(0xFFA78BFA); // soft violet (primary)
-  static const Color darkAccentGreen = Color(0xFF34D399); // emerald (money)
-  static const Color darkAccentBlue  = Color(0xFF60A5FA); // blue (info)
-  static const Color darkTextPrimary   = Color(0xFFEEF2FF); // warm white
-  static const Color darkTextSecondary = Color(0xFF6B7A99); // muted
+  // ── Dark Mode (Ocean Blue & Cyan) ──────────────────────────────────────────
+  static const Color darkBackground   = Color(0xFF071A2E); // Deeper ocean navy
+  static const Color darkSurface      = Color(0xFF0F2D48); // Elevated card surface (more contrast)
+  static const Color darkElevated     = Color(0xFF1A4068); // Elevated element surface
+  static const Color darkBorder       = Color(0xFF2A5F8F); // More visible ocean border
+  static const Color darkAccent       = Color(0xFF00D2FF); // Electric cyan blue (Primary)
+  static const Color darkAccentGreen  = Color(0xFFFF8C00); // Sunset orange (Secondary/Money)
+  static const Color darkAccentBlue   = Color(0xFF38BDF8); // Bright sky blue
+  static const Color darkTextPrimary  = Color(0xFFFFFFFF); // Pure white for max clarity
+  static const Color darkTextSecondary= Color(0xFFAFC8DC); // Muted slate (not blue, readable)
 
-  // ── Light Mode ─────────────────────────────────────────────────────────────
-  static const Color lightBackground  = Color(0xFFF4F6FF); // lavender-tinted white
-  static const Color lightSurface     = Color(0xFFFFFFFF); // pure white card
-  static const Color lightElevated    = Color(0xFFEEF0FF);
-  static const Color lightBorder      = Color(0xFFDDE1F5); // soft indigo border
-  static const Color lightAccent      = Color(0xFF7C3AED); // vivid violet
-  static const Color lightAccentGreen = Color(0xFF059669); // emerald
-  static const Color lightAccentBlue  = Color(0xFF2563EB); // blue
-  static const Color lightTextPrimary   = Color(0xFF1A1F3C); // deep navy text
-  static const Color lightTextSecondary = Color(0xFF7580A0);
-  static const Color lightDivider = Color(0xFFE5E8F8);
-  static const Color darkDivider  = Color(0xFF1E2540);
+  // ── Light Mode (High Contrast) ─────────────────────────────────────────────
+  static const Color lightBackground   = Color(0xFFDEEFF8); // Slightly deeper sky tint
+  static const Color lightSurface      = Color(0xFFFFFFFF); // Pure white card surface
+  static const Color lightElevated     = Color(0xFFCDE4F2); // Deeper sky elevated chip
+  static const Color lightBorder       = Color(0xFFABC4D8); // Visible border
+  static const Color lightAccent       = Color(0xFF005F8E); // Deeper ocean for contrast
+  static const Color lightAccentGreen  = Color(0xFFD9620A); // Deeper sunset orange
+  static const Color lightAccentBlue   = Color(0xFF0077A8); // Deeper sky blue
+  static const Color lightTextPrimary  = Color(0xFF041525); // Near-black deep navy text
+  static const Color lightTextSecondary= Color(0xFF3D5A70); // Readable muted slate
+  static const Color lightDivider     = Color(0xFFB8D4E8);
+  static const Color darkDivider      = Color(0xFF1B3F60);
+
+  // ── Gradients ──────────────────────────────────────────────────────────────
+  static const LinearGradient cyanGradient = LinearGradient(
+    colors: [Color(0xFF00D2FF), Color(0xFF0077B6)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient orangeGradient = LinearGradient(
+    colors: [Color(0xFFFF8C00), Color(0xFFFFB703)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 
   // ── Semantic ───────────────────────────────────────────────────────────────
-  static const Color success  = Color(0xFF34D399);
-  static const Color warning  = Color(0xFFFBBF24);
-  static const Color error    = Color(0xFFF87171);
+  static const Color success  = Color(0xFF10B981);
+  static const Color warning  = Color(0xFFF59E0B);
+  static const Color error    = Color(0xFFEF4444);
 
-  // ── Avatar Palette ─────────────────────────────────────────────────────────
+  // ── 7 Exact Requested Student Palette Colors ──────────────────────────────
   static const List<Color> avatarPalette = [
-    Color(0xFFA78BFA), // Violet
-    Color(0xFF34D399), // Emerald
-    Color(0xFF60A5FA), // Blue
-    Color(0xFFFBBF24), // Amber
-    Color(0xFFF472B6), // Pink
-    Color(0xFF2DD4BF), // Teal
-    Color(0xFFFB923C), // Orange
-    Color(0xFF818CF8), // Indigo
-    Color(0xFF4ADE80), // Green
-    Color(0xFFE879F9), // Fuchsia
-    Color(0xFF38BDF8), // Sky
-    Color(0xFFF87171), // Red
+    Color(0xFFEF4444), // Red
+    Color(0xFFF59E0B), // Yellow
     Color(0xFF84CC16), // Lime
-    Color(0xFF94A3B8), // Slate
-    Color(0xFFD946EF), // Magenta
-    Color(0xFFA3E635), // Yellow-Green
+    Color(0xFFEC4899), // Pink
+    Color(0xFF8B5CF6), // Violet
+    Color(0xFFA855F7), // Purple
+    Color(0xFF14B8A6), // Teal
   ];
 }

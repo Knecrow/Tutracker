@@ -1,7 +1,7 @@
 name: Tutracker
 description: "A premium native mobile Tuition Tracker app."
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.4.0+5
 
 environment:
   sdk: '>=3.3.0 <4.0.0'

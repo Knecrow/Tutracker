@@ -46,11 +46,14 @@ class HomeScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const TuTrackerLogo(),
-                              const SizedBox(height: 2),
                               Text(
-                                '${students.length} student${students.length != 1 ? 's' : ''} tracked',
-                                style: TextStyle(fontSize: 12, color: context.secondaryText),
+                                'TuTracker',
+                                style: TextStyle(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.w800,
+                                  color: context.primaryText,
+                                  letterSpacing: -0.8,
+                                ),
                               ),
                             ],
                           ),
@@ -80,16 +83,16 @@ class HomeScreen extends ConsumerWidget {
                     Row(
                       children: [
                         _StatChip(
-                          label: 'Pending',
-                          value: '${settings.currencySymbol}${analytics.totalPendingEarnings.toStringAsFixed(0)}',
-                          icon: Icons.account_balance_wallet_rounded,
+                          label: 'Students',
+                          value: '${students.length}',
+                          icon: Icons.people_alt_rounded,
                           color: accent,
                         ),
                         const SizedBox(width: 10),
                         _StatChip(
-                          label: 'This month',
-                          value: '${analytics.totalClassesThisMonth} classes',
-                          icon: Icons.school_rounded,
+                          label: 'Pending',
+                          value: '${settings.currencySymbol}${analytics.totalPendingEarnings.toStringAsFixed(0)}',
+                          icon: Icons.account_balance_wallet_rounded,
                           color: context.accentGreen,
                         ),
                       ],
@@ -190,22 +193,31 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
     final earned = perSession * attended;
     final isDark = context.isDark;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: isDark
-            ? [BoxShadow(color: color.withValues(alpha: 0.06), blurRadius: 16, offset: const Offset(0, 4))]
-            : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 3))],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Card Header ─────────────────────────────────────────────
-          GestureDetector(
-            onTap: () => setState(() => _expanded = !_expanded),
-            child: Padding(
+    return GestureDetector(
+      onTap: () => setState(() => _expanded = !_expanded),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: context.surface,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: isDark
+              ? [BoxShadow(color: color.withValues(alpha: 0.12), blurRadius: 16, offset: const Offset(0, 4))]
+              : [BoxShadow(color: color.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, 3))],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Card Header (Colored Tinted Section) ──────────────────────
+            Container(
+              decoration: BoxDecoration(
+                color: Color.alphaBlend(
+                  color.withValues(alpha: isDark ? 0.16 : 0.09),
+                  context.surface,
+                ),
+                borderRadius: _expanded
+                    ? const BorderRadius.vertical(top: Radius.circular(20))
+                    : BorderRadius.circular(20),
+              ),
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
@@ -289,7 +301,6 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                 ],
               ),
             ),
-          ),
 
           // ── Expanded Panel ──────────────────────────────────────────
           AnimatedSize(
@@ -323,7 +334,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 }
 
@@ -363,86 +375,94 @@ class _AttendanceGrid extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 10),
-        Wrap(
-          spacing: 7,
-          runSpacing: 7,
+        Column(
           children: List.generate(targetClasses, (i) {
             final isChecked = i < slotStates.length && slotStates[i];
             final ts = timestamps.where((t) => t.endsWith('|$i')).lastOrNull;
             final iso = ts?.split('|').first;
-            final day = iso != null ? DateTime.tryParse(iso)?.day.toString() : null;
+            final dt = iso != null ? DateTime.tryParse(iso) : null;
 
-            return GestureDetector(
-              onTap: () => notifier.toggleSlot(i),
-              onLongPress: () => _pickDate(context, ref, i, slotStates),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                width: 36,
-                height: 36,
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: isChecked ? accentColor : context.elevated,
-                  borderRadius: BorderRadius.circular(9),
+                  color: isChecked
+                      ? accentColor.withValues(alpha: context.isDark ? 0.08 : 0.05)
+                      : context.elevated.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Center(
-                  child: isChecked && day != null
-                      ? Text(
-                          day,
-                          style: const TextStyle(
+                child: Row(
+                  children: [
+                    // Class label & Date
+                    Text(
+                      'Class ${i + 1}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: isChecked ? context.primaryText : context.secondaryText,
+                      ),
+                    ),
+                    if (isChecked && dt != null) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: accentColor.withValues(alpha: 0.14),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          DateFormat('d MMM').format(dt),
+                          style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                            color: accentColor,
                           ),
-                        )
-                      : isChecked
-                          ? const Icon(Icons.check_rounded, size: 16, color: Colors.white)
-                          : Text(
-                              '${i + 1}',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                                color: context.secondaryText,
-                              ),
-                            ),
+                        ),
+                      ),
+                    ],
+                    const Spacer(),
+
+                    // Calendar button (pick custom date)
+                    GestureDetector(
+                      onTap: () => _pickDate(context, ref, i, slotStates),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: context.surface,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.calendar_month_rounded,
+                          size: 18,
+                          color: isChecked ? accentColor : context.secondaryText,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+
+                    // Toggle switch (Toggle ON = Today's date)
+                    Switch.adaptive(
+                      value: isChecked,
+                      activeThumbColor: accentColor,
+                      activeTrackColor: accentColor.withValues(alpha: 0.3),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      onChanged: (val) {
+                        if (val) {
+                          // Toggle ON -> Mark Today's date
+                          notifier.toggleSlot(i, selectedDate: DateTime.now());
+                        } else {
+                          // Toggle OFF -> Unmark
+                          notifier.toggleSlot(i);
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
             );
           }),
         ),
-        const SizedBox(height: 6),
-        Text(
-          'Tap to toggle · Long-press to pick date',
-          style: TextStyle(fontSize: 10, color: context.secondaryText.withValues(alpha: 0.6)),
-        ),
-        if (timestamps.isNotEmpty) ...[
-          const SizedBox(height: 10),
-          Text(
-            'Logged Class Dates:',
-            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: context.secondaryText),
-          ),
-          const SizedBox(height: 6),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: timestamps.map((ts) {
-              final parts = ts.split('|');
-              final dt = DateTime.tryParse(parts.first);
-              final idx = parts.length > 1 ? int.tryParse(parts.last) : null;
-              if (dt == null) return const SizedBox.shrink();
-              final dateStr = DateFormat('EEE, d MMM yyyy').format(dt);
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  idx != null ? '#${idx + 1}: $dateStr' : dateStr,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: accentColor),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
       ],
     );
   }
@@ -481,7 +501,7 @@ class _ActionRow extends ConsumerWidget {
         _ActionBtn(
           icon: Icons.delete_outline_rounded,
           label: 'Delete',
-          color: AppColors.error,
+          color: const Color(0xFFEF4444), // Always Crimson Red
           onTap: () => showDialog(
             context: context,
             builder: (_) => DeleteStudentDialog(studentId: student.id, studentName: student.name),
@@ -491,14 +511,14 @@ class _ActionRow extends ConsumerWidget {
         _ActionBtn(
           icon: Icons.edit_outlined,
           label: 'Edit',
-          color: context.accentBlue,
+          color: const Color(0xFFFF8C00), // Always Sunset Orange
           onTap: () => context.push('/edit-student/${student.id}'),
         ),
         const SizedBox(width: 8),
         _ActionBtn(
           icon: Icons.refresh_rounded,
           label: 'New cycle',
-          color: accentColor,
+          color: const Color(0xFF10B981), // Always Emerald Green
           onTap: () => showDialog(
             context: context,
             builder: (_) => CycleRolloverDialog(
@@ -530,7 +550,7 @@ class _ActionBtn extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 9),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.08),
+            color: color.withValues(alpha: context.isDark ? 0.20 : 0.14),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(

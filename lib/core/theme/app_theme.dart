@@ -70,7 +70,7 @@ class AppTheme {
         activeTrackColor: AppColors.darkAccent,
         thumbColor: AppColors.darkAccent,
         inactiveTrackColor: AppColors.darkBorder,
-        overlayColor: Color(0x22A78BFA),
+        overlayColor: Color(0x2200D2FF),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.darkElevated,
@@ -153,7 +153,7 @@ class AppTheme {
         activeTrackColor: AppColors.lightAccent,
         thumbColor: AppColors.lightAccent,
         inactiveTrackColor: AppColors.lightBorder,
-        overlayColor: Color(0x227C3AED),
+        overlayColor: Color(0x220077B6),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.lightElevated,
