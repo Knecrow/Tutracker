@@ -105,26 +105,13 @@ class HomeScreen extends ConsumerWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Students & Attendance',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.sheetTextPrimary,
-                              ),
-                            ),
-                            Text(
-                              '${students.length} Total',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.sheetTextSecondary,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          'Students & Attendance',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.sheetTextPrimary,
+                          ),
                         ),
                       ),
                       students.isEmpty
@@ -378,7 +365,7 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                     children: [
                       Divider(height: 1, color: AppColors.sheetBorder),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                         child: _AttendanceGrid(
                           studentId: student.id,
                           targetClasses: total,
