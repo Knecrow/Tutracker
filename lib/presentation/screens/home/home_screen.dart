@@ -236,6 +236,12 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
 
     final solidBg = Color.alphaBlend(color.withValues(alpha: 0.16), AppColors.sheetSurface);
 
+    final isDarkCard = ThemeData.estimateBrightnessForColor(color) == Brightness.dark;
+    final fgPrimary = isDarkCard ? Colors.white : const Color(0xFF0F172A);
+    final fgSecondary = isDarkCard ? Colors.white.withValues(alpha: 0.85) : const Color(0xFF334155);
+    final overlayBg = isDarkCard ? Colors.white.withValues(alpha: 0.22) : const Color(0xFF0F172A).withValues(alpha: 0.12);
+    final overlayBorder = isDarkCard ? Colors.white.withValues(alpha: 0.35) : const Color(0xFF0F172A).withValues(alpha: 0.20);
+
     return AnimatedScale(
       scale: _isPressed ? 0.98 : 1.0,
       duration: const Duration(milliseconds: 140),
@@ -250,13 +256,6 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.35),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,16 +273,16 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                         height: 46,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white.withValues(alpha: 0.22),
-                          border: Border.all(color: Colors.white, width: 2),
+                          color: overlayBg,
+                          border: Border.all(color: fgPrimary, width: 2),
                         ),
                         child: Center(
                           child: Text(
                             student.name[0].toUpperCase(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w800,
-                              color: Colors.white,
+                              color: fgPrimary,
                             ),
                           ),
                         ),
@@ -298,10 +297,10 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                               student.name,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white,
+                                color: fgPrimary,
                               ),
                             ),
                             const SizedBox(height: 2),
@@ -313,8 +312,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white.withValues(alpha: 0.85),
+                                fontWeight: FontWeight.w600,
+                                color: fgSecondary,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -323,8 +322,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                               child: LinearProgressIndicator(
                                 value: progress,
                                 minHeight: 4,
-                                backgroundColor: Colors.white.withValues(alpha: 0.25),
-                                valueColor: const AlwaysStoppedAnimation(Colors.white),
+                                backgroundColor: overlayBg,
+                                valueColor: AlwaysStoppedAnimation(fgPrimary),
                               ),
                             ),
                           ],
@@ -336,19 +335,19 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.22),
+                          color: overlayBg,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: Colors.white.withValues(alpha: 0.35), width: 1),
+                          border: Border.all(color: overlayBorder, width: 1),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               '$attended/$total',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white,
+                                color: fgPrimary,
                               ),
                             ),
                             const SizedBox(width: 4),
@@ -356,10 +355,10 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                               turns: _expanded ? 0.5 : 0.0,
                               duration: const Duration(milliseconds: 220),
                               curve: Curves.easeOutCubic,
-                              child: const Icon(
+                              child: Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 size: 16,
-                                color: Colors.white,
+                                color: fgPrimary,
                               ),
                             ),
                           ],
@@ -380,7 +379,7 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Divider(height: 1, color: Colors.white.withValues(alpha: 0.20)),
+                      Divider(height: 1, color: overlayBorder),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
                         child: _AttendanceGrid(
@@ -423,8 +422,10 @@ class _AttendanceGrid extends ConsumerWidget {
     final slotStates = attendance?.slotStates ?? List.filled(targetClasses, false);
     final timestamps = attendance?.timestamps ?? [];
     final notifier = ref.read(attendanceProvider(studentId).notifier);
-    final attendedCount = slotStates.where((s) => s).length;
-    final isCompleted = attendedCount >= targetClasses && targetClasses > 0;
+    final isDarkCard = ThemeData.estimateBrightnessForColor(accentColor) == Brightness.dark;
+    final fgPrimary = isDarkCard ? Colors.white : const Color(0xFF0F172A);
+    final overlayBg = isDarkCard ? Colors.white.withValues(alpha: 0.22) : const Color(0xFF0F172A).withValues(alpha: 0.12);
+    final overlayBorder = isDarkCard ? Colors.white.withValues(alpha: 0.35) : const Color(0xFF0F172A).withValues(alpha: 0.20);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -448,12 +449,10 @@ class _AttendanceGrid extends ConsumerWidget {
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isChecked
-                      ? Colors.white.withValues(alpha: 0.26)
-                      : Colors.white.withValues(alpha: 0.12),
+                  color: isChecked ? overlayBg : overlayBg.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.30),
+                    color: overlayBorder,
                     width: 1,
                   ),
                 ),
@@ -465,7 +464,7 @@ class _AttendanceGrid extends ConsumerWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: isChecked ? FontWeight.w800 : FontWeight.w600,
-                        color: Colors.white,
+                        color: fgPrimary,
                       ),
                     ),
                     const Spacer(),
@@ -476,29 +475,29 @@ class _AttendanceGrid extends ConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.20),
+                          color: overlayBg,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.35),
+                            color: overlayBorder,
                             width: 1,
                           ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.calendar_month_rounded,
                               size: 15,
-                              color: Colors.white,
+                              color: fgPrimary,
                             ),
                             if (isChecked && dt != null) ...[
                               const SizedBox(width: 5),
                               Text(
                                 DateFormat('d MMM').format(dt),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w800,
-                                  color: Colors.white,
+                                  color: fgPrimary,
                                 ),
                               ),
                             ],
@@ -511,10 +510,10 @@ class _AttendanceGrid extends ConsumerWidget {
                     // Toggle switch (ON = Mark today, OFF = Unmark)
                     Switch.adaptive(
                       value: isChecked,
-                      activeThumbColor: Colors.white,
-                      activeTrackColor: Colors.white.withValues(alpha: 0.5),
-                      inactiveTrackColor: Colors.black.withValues(alpha: 0.2),
-                      inactiveThumbColor: Colors.white.withValues(alpha: 0.8),
+                      activeThumbColor: fgPrimary,
+                      activeTrackColor: fgPrimary.withValues(alpha: 0.5),
+                      inactiveTrackColor: isDarkCard ? Colors.black.withValues(alpha: 0.25) : Colors.grey.withValues(alpha: 0.3),
+                      inactiveThumbColor: fgPrimary.withValues(alpha: 0.7),
                       trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       onChanged: (val) {
@@ -564,6 +563,10 @@ class _ActionRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isCompleted = attended >= student.targetClasses && student.targetClasses > 0;
+    final isDarkCard = ThemeData.estimateBrightnessForColor(accentColor) == Brightness.dark;
+    final fgPrimary = isDarkCard ? Colors.white : const Color(0xFF0F172A);
+    final overlayBg = isDarkCard ? Colors.white.withValues(alpha: 0.22) : const Color(0xFF0F172A).withValues(alpha: 0.12);
+    final overlayBorder = isDarkCard ? Colors.white.withValues(alpha: 0.35) : const Color(0xFF0F172A).withValues(alpha: 0.20);
 
     return Column(
       children: [
@@ -622,7 +625,7 @@ class _ActionRow extends ConsumerWidget {
                 message: 'Delete student',
                 child: _ActionBtn(
                   icon: Icons.delete_outline_rounded,
-                  color: const Color(0xFFEF4444),
+                  color: accentColor,
                   onTap: () => showDialog(
                     context: context,
                     builder: (_) => DeleteStudentDialog(studentId: student.id, studentName: student.name),
@@ -636,7 +639,7 @@ class _ActionRow extends ConsumerWidget {
                 message: 'Edit student',
                 child: _ActionBtn(
                   icon: Icons.edit_outlined,
-                  color: const Color(0xFFFF8C00),
+                  color: accentColor,
                   onTap: () => context.push('/edit-student/${student.id}'),
                 ),
               ),
@@ -647,7 +650,7 @@ class _ActionRow extends ConsumerWidget {
                 message: 'Start new cycle',
                 child: _ActionBtn(
                   icon: Icons.refresh_rounded,
-                  color: const Color(0xFF10B981),
+                  color: accentColor,
                   onTap: () => showDialog(
                     context: context,
                     builder: (_) => CycleRolloverDialog(
@@ -676,17 +679,22 @@ class _ActionBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkCard = ThemeData.estimateBrightnessForColor(color) == Brightness.dark;
+    final fgPrimary = isDarkCard ? Colors.white : const Color(0xFF0F172A);
+    final overlayBg = isDarkCard ? Colors.white.withValues(alpha: 0.22) : const Color(0xFF0F172A).withValues(alpha: 0.12);
+    final overlayBorder = isDarkCard ? Colors.white.withValues(alpha: 0.35) : const Color(0xFF0F172A).withValues(alpha: 0.20);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.22),
+          color: overlayBg,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.35), width: 1),
+          border: Border.all(color: overlayBorder, width: 1),
         ),
         child: Center(
-          child: Icon(icon, size: 20, color: Colors.white),
+          child: Icon(icon, size: 20, color: fgPrimary),
         ),
       ),
     );
