@@ -264,7 +264,7 @@ class _HistoryCard extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.sheetSurface,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.sheetBorder, width: 1),
       ),
       child: Row(

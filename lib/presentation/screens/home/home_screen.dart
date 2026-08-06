@@ -247,7 +247,7 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
             color: AppColors.sheetSurface,
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(color: AppColors.sheetBorder, width: 1),
           ),
           child: Column(
