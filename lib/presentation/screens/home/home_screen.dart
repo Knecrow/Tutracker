@@ -473,13 +473,13 @@ class _AttendanceGrid extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 220),
+          constraints: const BoxConstraints(maxHeight: 240),
           child: GridView.builder(
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
             itemCount: targetClasses,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: 1,
               mainAxisExtent: 46,
               mainAxisSpacing: 8,
               crossAxisSpacing: 8,
