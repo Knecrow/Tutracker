@@ -397,7 +397,7 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
   }
 }
 
-// ── Attendance Grid (chip style) ──────────────────────────────────────────────
+// ── Attendance Grid (Chip Grid Matrix) ─────────────────────────────────────────
 class _AttendanceGrid extends ConsumerWidget {
   const _AttendanceGrid({required this.studentId, required this.targetClasses, required this.accentColor});
   final String studentId;
@@ -411,6 +411,7 @@ class _AttendanceGrid extends ConsumerWidget {
     final timestamps = attendance?.timestamps ?? [];
     final notifier = ref.read(attendanceProvider(studentId).notifier);
     final attendedCount = slotStates.where((s) => s).length;
+    final isCompleted = attendedCount >= targetClasses && targetClasses > 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,129 +419,166 @@ class _AttendanceGrid extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Attendance',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.sheetTextSecondary),
+            Row(
+              children: [
+                Text(
+                  'ATTENDANCE LOG',
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.8,
+                    color: AppColors.sheetTextSecondary,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: isCompleted
+                        ? const Color(0xFF10B981).withValues(alpha: 0.16)
+                        : accentColor.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    '$attendedCount / $targetClasses',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: isCompleted ? const Color(0xFF10B981) : accentColor,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            if (attendedCount < targetClasses)
+            if (!isCompleted)
               GestureDetector(
                 onTap: () => notifier.markAllAttended(targetClasses),
                 child: Text(
                   'Mark all',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: accentColor),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: accentColor),
                 ),
               )
             else
-              const Text(
-                'Cycle Done (Use "New Cycle" below)',
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF10B981)),
+              Row(
+                children: const [
+                  Icon(Icons.check_circle_rounded, size: 14, color: Color(0xFF10B981)),
+                  SizedBox(width: 4),
+                  Text(
+                    'Completed',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF10B981)),
+                  ),
+                ],
               ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 240),
-          child: SingleChildScrollView(
-            child: Column(
-              children: List.generate(targetClasses, (i) {
-            final isChecked = i < slotStates.length && slotStates[i];
-            final ts = timestamps.where((t) => t.endsWith('|$i')).lastOrNull;
-            final iso = ts?.split('|').first;
-            final dt = iso != null ? DateTime.tryParse(iso) : null;
+          constraints: const BoxConstraints(maxHeight: 220),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            itemCount: targetClasses,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisExtent: 46,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+            ),
+            itemBuilder: (context, i) {
+              final isChecked = i < slotStates.length && slotStates[i];
+              final ts = timestamps.where((t) => t.endsWith('|$i')).lastOrNull;
+              final iso = ts?.split('|').first;
+              final dt = iso != null ? DateTime.tryParse(iso) : null;
 
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: isChecked
-                      ? accentColor.withValues(alpha: 0.15)
-                      : AppColors.sheetBorder.withValues(alpha: 0.35),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isChecked ? accentColor.withValues(alpha: 0.3) : AppColors.sheetBorder.withValues(alpha: 0.6),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    // Class label & Date
-                    Text(
-                      'Class ${i + 1}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: isChecked ? AppColors.sheetTextPrimary : AppColors.sheetTextSecondary,
-                      ),
+              return InkWell(
+                onTap: () {
+                  if (isChecked) {
+                    notifier.toggleSlot(i);
+                  } else {
+                    notifier.toggleSlot(i, selectedDate: DateTime.now());
+                  }
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: isChecked
+                        ? accentColor.withValues(alpha: 0.16)
+                        : AppColors.sheetSurface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isChecked
+                          ? accentColor.withValues(alpha: 0.45)
+                          : AppColors.sheetBorder,
+                      width: 1,
                     ),
-                    if (isChecked && dt != null) ...[
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: accentColor.withValues(alpha: 0.14),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
+                  ),
+                  child: Row(
+                    children: [
+                      // Slot index badge
+                      Container(
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isChecked
+                              ? accentColor.withValues(alpha: 0.25)
+                              : AppColors.sheetBorder.withValues(alpha: 0.5),
+                        ),
+                        child: Center(
                           child: Text(
-                            DateFormat('d MMM').format(dt),
+                            '${i + 1}',
                             style: TextStyle(
                               fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: accentColor,
+                              fontWeight: FontWeight.w800,
+                              color: isChecked ? accentColor : AppColors.sheetTextSecondary,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
-                    ],
-                    const Spacer(),
+                      const SizedBox(width: 8),
 
-                    // Calendar button (pick custom date)
-                    GestureDetector(
-                      onTap: () => _pickDate(context, ref, i, slotStates),
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: AppColors.sheetSurface,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColors.sheetBorder, width: 1),
-                        ),
-                        child: Icon(
-                          Icons.calendar_month_rounded,
-                          size: 18,
-                          color: isChecked ? accentColor : AppColors.sheetTextSecondary,
+                      // Class date or state
+                      Expanded(
+                        child: Text(
+                          isChecked
+                              ? (dt != null ? DateFormat('d MMM').format(dt) : 'Done')
+                              : 'Class ${i + 1}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: isChecked ? FontWeight.w700 : FontWeight.w500,
+                            color: isChecked ? AppColors.sheetTextPrimary : AppColors.sheetTextSecondary,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
 
-                    // Toggle switch (Toggle ON = Today's date)
-                    Switch.adaptive(
-                      value: isChecked,
-                      activeThumbColor: accentColor,
-                      activeTrackColor: accentColor.withValues(alpha: 0.3),
-                      inactiveTrackColor: Colors.grey.withValues(alpha: 0.4),
-                      inactiveThumbColor: Colors.white,
-                      trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      onChanged: (val) {
-                        if (val) {
-                          // Toggle ON -> Mark Today's date
-                          notifier.toggleSlot(i, selectedDate: DateTime.now());
-                        } else {
-                          // Toggle OFF -> Unmark
-                          notifier.toggleSlot(i);
-                        }
-                      },
-                    ),
-                  ],
+                      // Calendar button when checked, or checkmark indicator
+                      if (isChecked)
+                        GestureDetector(
+                          onTap: () => _pickDate(context, ref, i, slotStates),
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: Icon(
+                              Icons.calendar_month_rounded,
+                              size: 16,
+                              color: accentColor,
+                            ),
+                          ),
+                        )
+                      else
+                        Icon(
+                          Icons.add_circle_outline_rounded,
+                          size: 16,
+                          color: AppColors.sheetTextSecondary.withValues(alpha: 0.6),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }),
-            ),
+              );
+            },
           ),
         ),
       ],
@@ -566,7 +604,7 @@ class _AttendanceGrid extends ConsumerWidget {
   }
 }
 
-// ── Action Row ─────────────────────────────────────────────────────────────────
+// ── Action Row (Smart Action Bar) ──────────────────────────────────────────────
 class _ActionRow extends ConsumerWidget {
   const _ActionRow({required this.student, required this.attended, required this.earned, required this.accentColor});
   final Student student;
@@ -576,39 +614,101 @@ class _ActionRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Row(
+    final isCompleted = attended >= student.targetClasses && student.targetClasses > 0;
+
+    return Column(
       children: [
-        _ActionBtn(
-          icon: Icons.delete_outline_rounded,
-          label: 'Delete',
-          color: const Color(0xFFEF4444),
-          onTap: () => showDialog(
-            context: context,
-            builder: (_) => DeleteStudentDialog(studentId: student.id, studentName: student.name),
-          ),
-        ),
-        const SizedBox(width: 8),
-        _ActionBtn(
-          icon: Icons.edit_outlined,
-          label: 'Edit',
-          color: const Color(0xFFFF8C00),
-          onTap: () => context.push('/edit-student/${student.id}'),
-        ),
-        const SizedBox(width: 8),
-        _ActionBtn(
-          icon: Icons.refresh_rounded,
-          label: 'New Cycle',
-          color: const Color(0xFF10B981),
-          onTap: () => showDialog(
-            context: context,
-            builder: (_) => CycleRolloverDialog(
-              studentId: student.id,
-              studentName: student.name,
-              attendedCount: attended,
-              targetClasses: student.targetClasses,
-              earnedAmount: earned,
+        if (isCompleted) ...[
+          // Prominent "Start New Cycle" button when cycle is finished
+          GestureDetector(
+            onTap: () => showDialog(
+              context: context,
+              builder: (_) => CycleRolloverDialog(
+                studentId: student.id,
+                studentName: student.name,
+                attendedCount: attended,
+                targetClasses: student.targetClasses,
+                earnedAmount: earned,
+              ),
+            ),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF10B981),
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF10B981).withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.refresh_rounded, size: 18, color: Colors.white),
+                  SizedBox(width: 8),
+                  Text(
+                    'Start New Cycle',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+          const SizedBox(height: 8),
+        ],
+
+        // Secondary actions (Delete & Edit, or Delete, Edit, Cycle)
+        Row(
+          children: [
+            Tooltip(
+              message: 'Delete student',
+              child: _ActionBtn(
+                icon: Icons.delete_outline_rounded,
+                color: const Color(0xFFEF4444),
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (_) => DeleteStudentDialog(studentId: student.id, studentName: student.name),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Tooltip(
+              message: 'Edit student',
+              child: _ActionBtn(
+                icon: Icons.edit_outlined,
+                color: const Color(0xFFFF8C00),
+                onTap: () => context.push('/edit-student/${student.id}'),
+              ),
+            ),
+            if (!isCompleted) ...[
+              const SizedBox(width: 8),
+              Tooltip(
+                message: 'Start new cycle',
+                child: _ActionBtn(
+                  icon: Icons.refresh_rounded,
+                  color: const Color(0xFF10B981),
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (_) => CycleRolloverDialog(
+                      studentId: student.id,
+                      studentName: student.name,
+                      attendedCount: attended,
+                      targetClasses: student.targetClasses,
+                      earnedAmount: earned,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
       ],
     );
@@ -616,9 +716,8 @@ class _ActionRow extends ConsumerWidget {
 }
 
 class _ActionBtn extends StatelessWidget {
-  const _ActionBtn({required this.icon, required this.label, required this.color, required this.onTap});
+  const _ActionBtn({required this.icon, required this.color, required this.onTap});
   final IconData icon;
-  final String label;
   final Color color;
   final VoidCallback onTap;
 
@@ -628,30 +727,12 @@ class _ActionBtn extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.16),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 16, color: color),
-              const SizedBox(width: 4),
-              Flexible(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: color,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          child: Icon(icon, size: 20, color: color),
         ),
       ),
     );
