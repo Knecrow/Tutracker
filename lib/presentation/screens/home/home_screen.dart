@@ -139,7 +139,7 @@ class HomeScreen extends ConsumerWidget {
                               itemCount: students.length,
                               itemBuilder: (context, i) => _StudentTile(student: students[i]),
                             ),
-                      const SizedBox(height: 100),
+                      const SizedBox(height: 160),
                     ],
                   ),
                 ),
@@ -253,74 +253,75 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    // Circular Avatar with Status Ring
-                    Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: color.withValues(alpha: 0.18),
-                        border: Border.all(color: color, width: 2),
-                      ),
-                      child: Center(
-                        child: Text(
-                          student.name[0].toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w800,
-                            color: color,
+              GestureDetector(
+                onTap: () => setState(() => _expanded = !_expanded),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      // Circular Avatar with Status Ring
+                      Container(
+                        width: 46,
+                        height: 46,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: color.withValues(alpha: 0.18),
+                          border: Border.all(color: color, width: 2),
+                        ),
+                        child: Center(
+                          child: Text(
+                            student.name[0].toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: color,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 14),
-                    // Name & Subject
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            student.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.sheetTextPrimary,
+                      const SizedBox(width: 14),
+                      // Name & Subject
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              student.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.sheetTextPrimary,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            student.subject?.isNotEmpty == true
-                                ? student.subject!
-                                : '${settings.currencySymbol}${student.monthlyFee.toStringAsFixed(0)}/mo',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary),
-                          ),
-                          const SizedBox(height: 6),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: LinearProgressIndicator(
-                              value: progress,
-                              minHeight: 4,
-                              backgroundColor: AppColors.sheetBorder,
-                              valueColor: AlwaysStoppedAnimation(color),
+                            const SizedBox(height: 2),
+                            Text(
+                              student.subject?.isNotEmpty == true
+                                  ? student.subject!
+                                  : '${settings.currencySymbol}${student.monthlyFee.toStringAsFixed(0)}/mo',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 6),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: LinearProgressIndicator(
+                                value: progress,
+                                minHeight: 4,
+                                backgroundColor: AppColors.sheetBorder,
+                                valueColor: AlwaysStoppedAnimation(color),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
+                      const SizedBox(width: 12),
 
-                    // ── Vibrant Action Pill Button (Matches User Mockup 'Pay Now' Pill) ──
-                    GestureDetector(
-                      onTap: () => setState(() => _expanded = !_expanded),
-                      child: Container(
+                      // ── Action Pill Badge ──
+                      Container(
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
                           color: color,
@@ -351,8 +352,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
 
@@ -360,6 +361,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
           AnimatedSize(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
+            alignment: Alignment.topCenter,
+            clipBehavior: Clip.hardEdge,
             child: _expanded
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
