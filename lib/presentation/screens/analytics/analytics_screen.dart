@@ -292,13 +292,13 @@ class _HeaderStatChip extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.14),
+                color: color,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 16, color: color),
+              child: Icon(icon, size: 18, color: Colors.white),
             ),
             const SizedBox(width: 8),
             Expanded(
