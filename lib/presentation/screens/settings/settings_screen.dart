@@ -378,7 +378,7 @@ class _SheetSectionCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 14,
                         fontWeight: FontWeight.w800,
                         color: AppColors.sheetTextPrimary,
                       ),
@@ -388,7 +388,7 @@ class _SheetSectionCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 11,
+                        fontSize: 10.5,
                         color: AppColors.sheetTextSecondary,
                         fontWeight: FontWeight.w500,
                       ),
