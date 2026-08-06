@@ -260,22 +260,28 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                   padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
-                      // Circular Avatar with Status Ring
+                      // Circular Metallic Avatar
                       Container(
                         width: 46,
                         height: 46,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: color.withValues(alpha: 0.14),
-                          border: Border.all(color: color, width: 2),
+                          gradient: AppColors.getMetallicGradient(color),
+                          boxShadow: [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.30),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Center(
                           child: Text(
                             student.name[0].toUpperCase(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: color,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -323,12 +329,19 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                       ),
                       const SizedBox(width: 12),
 
-                      // ── Action Pill Badge ──
+                      // ── Metallic Action Pill Badge ──
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
-                          color: color,
+                          gradient: AppColors.getMetallicGradient(color),
                           borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.28),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,

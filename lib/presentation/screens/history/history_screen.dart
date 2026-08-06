@@ -269,22 +269,28 @@ class _HistoryCard extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          // Circular Avatar with Status Ring
+          // Circular Metallic Avatar
           Container(
             width: 46,
             height: 46,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color.withValues(alpha: 0.14),
-              border: Border.all(color: color, width: 2),
+              gradient: AppColors.getMetallicGradient(color),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.30),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Center(
               child: Text(
                 name.isNotEmpty ? name[0].toUpperCase() : '?',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: color,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
                 ),
               ),
             ),

@@ -72,17 +72,29 @@ class AppColors {
   static const Color warning  = Color(0xFFF59E0B);
   static const Color error    = Color(0xFFEF4444);
 
-  // ── Student Color Palette (10 Distinct High-Contrast Colors) ──────────────
+  // ── Student Metallic Color Palette (10 Rich Metallic Colors) ─────────────
   static const List<Color> avatarPalette = [
-    Color(0xFF2563EB), // 1. Royal Blue
-    Color(0xFF10B981), // 2. Emerald Green
-    Color(0xFFF59E0B), // 3. Amber Gold
-    Color(0xFF7C3AED), // 4. Violet Purple
-    Color(0xFFE11D48), // 5. Crimson Rose
-    Color(0xFF06B6D4), // 6. Electric Cyan
-    Color(0xFFEA580C), // 7. Sunset Orange
-    Color(0xFF4F46E5), // 8. Deep Indigo
-    Color(0xFF65A30D), // 9. Apple Lime
-    Color(0xFFC026D3), // 10. Berry Magenta
+    Color(0xFFD4AF37), // 1. Metallic Imperial Gold
+    Color(0xFF8A9EA7), // 2. Metallic Platinum Steel
+    Color(0xFFC86D7C), // 3. Metallic Rose Gold
+    Color(0xFF2563EB), // 4. Metallic Sapphire Blue
+    Color(0xFF059669), // 5. Metallic Chrome Emerald
+    Color(0xFFD97706), // 6. Metallic Copper Bronze
+    Color(0xFF7C3AED), // 7. Metallic Royal Amethyst
+    Color(0xFFDC2626), // 8. Metallic Ruby Crimson
+    Color(0xFF0891B2), // 9. Metallic Oceanic Titanium
+    Color(0xFF475569), // 10. Metallic Obsidian Slate
   ];
+
+  /// Creates a sleek 3-stop metallic shimmer gradient for student avatars and badges
+  static LinearGradient getMetallicGradient(Color baseColor) {
+    final lightHighlight = Color.alphaBlend(Colors.white.withValues(alpha: 0.40), baseColor);
+    final darkShadow = Color.alphaBlend(Colors.black.withValues(alpha: 0.28), baseColor);
+    return LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [lightHighlight, baseColor, darkShadow],
+      stops: const [0.0, 0.45, 1.0],
+    );
+  }
 }
