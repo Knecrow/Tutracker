@@ -34,19 +34,27 @@ class _EditStudentSheetState extends ConsumerState<EditStudentSheet> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadStudent());
+  }
+
   void _loadStudent() {
-    if (_loaded) return;
+    if (_loaded || !mounted) return;
     final students = ref.read(studentsProvider);
     final student = students.where((s) => s.id == widget.studentId).firstOrNull;
     if (student == null) return;
-    _nameController.text = student.name;
-    _feeController.text = student.monthlyFee.toStringAsFixed(0);
-    _subjectController.text = student.subject ?? '';
-    _targetClasses = student.targetClasses;
-    _selectedColorIndex = AppColors.avatarPalette.indexWhere(
-        (c) => c.toARGB32() == student.avatarColorValue);
-    if (_selectedColorIndex < 0) _selectedColorIndex = 0;
-    _loaded = true;
+    setState(() {
+      _nameController.text = student.name;
+      _feeController.text = student.monthlyFee.toStringAsFixed(0);
+      _subjectController.text = student.subject ?? '';
+      _targetClasses = student.targetClasses;
+      _selectedColorIndex = AppColors.avatarPalette.indexWhere(
+          (c) => c.toARGB32() == student.avatarColorValue);
+      if (_selectedColorIndex < 0) _selectedColorIndex = 0;
+      _loaded = true;
+    });
   }
 
   Future<void> _save() async {
@@ -77,8 +85,10 @@ class _EditStudentSheetState extends ConsumerState<EditStudentSheet> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<List<Student>>(studentsProvider, (_, next) {
+      if (!_loaded) _loadStudent();
+    });
     _loadStudent();
-    final isDark = context.isDark;
     final settings = ref.watch(settingsProvider);
 
     return Container(
