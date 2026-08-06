@@ -30,8 +30,8 @@ class CycleRolloverDialog extends ConsumerWidget {
 
     return BackdropFilter(
       filter: ImageFilter.blur(
-        sigmaX: context.themeExt.glassBlur * 1.5,
-        sigmaY: context.themeExt.glassBlur * 1.5,
+        sigmaX: 8.0,
+        sigmaY: 8.0,
       ),
       child: Dialog(
         backgroundColor: Colors.transparent,

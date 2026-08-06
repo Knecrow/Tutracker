@@ -314,11 +314,17 @@ class _HistoryCard extends ConsumerWidget {
                   style: const TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '$attendedCount classes logged',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.sheetTextSecondary),
+                Row(
+                  children: [
+                    const Icon(Icons.fact_check_rounded, size: 12, color: AppColors.sheetTextSecondary),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$attendedCount classes',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.sheetTextSecondary),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -405,14 +411,6 @@ class _EmptyHistoryState extends StatelessWidget {
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: AppColors.sheetTextPrimary,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Rollover a student cycle on the home tab to archive here',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.sheetTextSecondary,
             ),
           ),
         ],

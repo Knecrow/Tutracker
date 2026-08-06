@@ -338,10 +338,15 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                               ),
                             ),
                             const SizedBox(width: 4),
-                            Icon(
-                              _expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                              size: 16,
-                              color: Colors.white,
+                            AnimatedRotation(
+                              turns: _expanded ? 0.5 : 0.0,
+                              duration: const Duration(milliseconds: 220),
+                              curve: Curves.easeOutCubic,
+                              child: const Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                size: 16,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
@@ -560,35 +565,41 @@ class _ActionRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
-        _ActionBtn(
-          icon: Icons.delete_outline_rounded,
-          label: 'Delete',
-          color: const Color(0xFFEF4444),
-          onTap: () => showDialog(
-            context: context,
-            builder: (_) => DeleteStudentDialog(studentId: student.id, studentName: student.name),
+        Tooltip(
+          message: 'Delete student',
+          child: _ActionBtn(
+            icon: Icons.delete_outline_rounded,
+            color: const Color(0xFFEF4444),
+            onTap: () => showDialog(
+              context: context,
+              builder: (_) => DeleteStudentDialog(studentId: student.id, studentName: student.name),
+            ),
           ),
         ),
         const SizedBox(width: 8),
-        _ActionBtn(
-          icon: Icons.edit_outlined,
-          label: 'Edit',
-          color: const Color(0xFFFF8C00),
-          onTap: () => context.push('/edit-student/${student.id}'),
+        Tooltip(
+          message: 'Edit student',
+          child: _ActionBtn(
+            icon: Icons.edit_outlined,
+            color: const Color(0xFFFF8C00),
+            onTap: () => context.push('/edit-student/${student.id}'),
+          ),
         ),
         const SizedBox(width: 8),
-        _ActionBtn(
-          icon: Icons.refresh_rounded,
-          label: 'New cycle',
-          color: const Color(0xFF10B981),
-          onTap: () => showDialog(
-            context: context,
-            builder: (_) => CycleRolloverDialog(
-              studentId: student.id,
-              studentName: student.name,
-              attendedCount: attended,
-              targetClasses: student.targetClasses,
-              earnedAmount: earned,
+        Tooltip(
+          message: 'Start new cycle',
+          child: _ActionBtn(
+            icon: Icons.refresh_rounded,
+            color: const Color(0xFF10B981),
+            onTap: () => showDialog(
+              context: context,
+              builder: (_) => CycleRolloverDialog(
+                studentId: student.id,
+                studentName: student.name,
+                attendedCount: attended,
+                targetClasses: student.targetClasses,
+                earnedAmount: earned,
+              ),
             ),
           ),
         ),
@@ -598,9 +609,8 @@ class _ActionRow extends ConsumerWidget {
 }
 
 class _ActionBtn extends StatelessWidget {
-  const _ActionBtn({required this.icon, required this.label, required this.color, required this.onTap});
+  const _ActionBtn({required this.icon, required this.color, required this.onTap});
   final IconData icon;
-  final String label;
   final Color color;
   final VoidCallback onTap;
 
@@ -610,26 +620,12 @@ class _ActionBtn extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 9),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.16),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(14),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 14, color: color),
-              const SizedBox(width: 5),
-              Flexible(
-                child: Text(
-                  label,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
+          child: Icon(icon, size: 20, color: color),
         ),
       ),
     );
@@ -657,11 +653,6 @@ class _EmptyState extends StatelessWidget {
           const Text(
             'No students yet',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.sheetTextPrimary),
-          ),
-          const SizedBox(height: 6),
-          const Text(
-            'Tap + to add your first student',
-            style: TextStyle(fontSize: 13, color: AppColors.sheetTextSecondary),
           ),
         ],
       ),

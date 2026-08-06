@@ -23,6 +23,15 @@ void main() async {
   await Hive.openBox<BillingCycle>(AppConstants.cyclesBox);
   await Hive.openBox(AppConstants.settingsBox);
 
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color(0xFF14243B),
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
+
   runApp(const ProviderScope(child: TuTrackerApp()));
 }
 
