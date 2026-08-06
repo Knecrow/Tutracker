@@ -106,8 +106,8 @@ class AnalyticsScreen extends ConsumerWidget {
                       children: [
                         // ── Monthly Earnings Card ─────────────────────────
                         _SheetSectionCard(
-                          title: 'Monthly Earnings Trend',
-                          subtitle: 'Last 6 months',
+                          title: 'Earnings Trend',
+                          subtitle: 'Past 6 months',
                           icon: Icons.show_chart_rounded,
                           iconColor: AppColors.darkAccent,
                           child: SizedBox(
@@ -122,7 +122,7 @@ class AnalyticsScreen extends ConsumerWidget {
                         // ── Weekly Classes Card ────────────────────────────
                         _SheetSectionCard(
                           title: 'Weekly Classes',
-                          subtitle: 'Current month distribution',
+                          subtitle: 'This month',
                           icon: Icons.bar_chart_rounded,
                           iconColor: AppColors.darkAccentGreen,
                           child: SizedBox(
@@ -137,7 +137,7 @@ class AnalyticsScreen extends ConsumerWidget {
                         // ── Target Progress Card ───────────────────────────
                         _SheetSectionCard(
                           title: 'Target Progress',
-                          subtitle: 'Cycle completion per student',
+                          subtitle: 'Completion',
                           icon: Icons.donut_large_rounded,
                           iconColor: AppColors.darkAccentBlue,
                           child: analytics.donutEntries.isEmpty

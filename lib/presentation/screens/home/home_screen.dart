@@ -191,12 +191,24 @@ class _StatChip extends StatelessWidget {
               child: Icon(icon, size: 18, color: color),
             ),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: const TextStyle(fontSize: 11, color: AppColors.headerTextSecondary, fontWeight: FontWeight.w500)),
-                Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.headerTextPrimary)),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 11, color: AppColors.headerTextSecondary, fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.headerTextPrimary),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -289,6 +301,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                         children: [
                           Text(
                             student.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
@@ -300,6 +314,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                             student.subject?.isNotEmpty == true
                                 ? student.subject!
                                 : '${settings.currencySymbol}${student.monthlyFee.toStringAsFixed(0)}/mo',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary),
                           ),
                           const SizedBox(height: 6),
@@ -655,17 +671,21 @@ class _EmptyState extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: context.accent.withValues(alpha: 0.1),
+              color: AppColors.darkAccent.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(24),
             ),
-            child: Icon(Icons.person_add_rounded, size: 36, color: context.accent.withValues(alpha: 0.7)),
+            child: const Icon(Icons.person_add_rounded, size: 36, color: AppColors.darkAccent),
           ),
           const SizedBox(height: 20),
-          Text('No students yet',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: context.primaryText)),
+          const Text(
+            'No students yet',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.sheetTextPrimary),
+          ),
           const SizedBox(height: 6),
-          Text('Tap + to add your first student',
-              style: TextStyle(fontSize: 13, color: context.secondaryText)),
+          const Text(
+            'Tap + to add your first student',
+            style: TextStyle(fontSize: 13, color: AppColors.sheetTextSecondary),
+          ),
         ],
       ),
     );

@@ -315,6 +315,8 @@ class _HistoryCard extends ConsumerWidget {
               children: [
                 Text(
                   name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -324,11 +326,15 @@ class _HistoryCard extends ConsumerWidget {
                 const SizedBox(height: 2),
                 Text(
                   endDate != null ? '${startDate.monthLabel} → ${endDate!.monthLabel}' : startDate.monthLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   '$attendedCount classes logged',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.sheetTextSecondary),
                 ),
               ],

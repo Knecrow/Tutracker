@@ -101,7 +101,7 @@ class SettingsScreen extends ConsumerWidget {
                         // ── Currency Selection Card ───────────────────────
                         _SheetSectionCard(
                           title: 'Currency Symbol',
-                          subtitle: 'Symbol used across earnings displays',
+                          subtitle: 'Display currency',
                           icon: Icons.attach_money_rounded,
                           iconColor: AppColors.darkAccent,
                           child: Wrap(
@@ -146,7 +146,7 @@ class SettingsScreen extends ConsumerWidget {
                         // ── Preferences Card ──────────────────────────────
                         _SheetSectionCard(
                           title: 'Preferences',
-                          subtitle: 'Haptics & feedback options',
+                          subtitle: 'Feedback & vibration',
                           icon: Icons.tune_rounded,
                           iconColor: AppColors.darkAccentBlue,
                           child: Row(
@@ -161,7 +161,7 @@ class SettingsScreen extends ConsumerWidget {
                                     ),
                                     SizedBox(height: 2),
                                     Text(
-                                      'Vibration response on tap interactions',
+                                      'Vibration on tap',
                                       style: TextStyle(fontSize: 11, color: AppColors.sheetTextSecondary),
                                     ),
                                   ],
@@ -184,15 +184,15 @@ class SettingsScreen extends ConsumerWidget {
                         // ── About TuTracker Card ──────────────────────────
                         _SheetSectionCard(
                           title: 'About TuTracker',
-                          subtitle: 'Local organizer for private tutors',
+                          subtitle: 'Tuition organizer',
                           icon: Icons.auto_awesome_rounded,
                           iconColor: AppColors.darkAccentGreen,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'A locally-saved organizer for private tutors to track monthly attendance, target classes, and salary.',
-                                style: TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary, height: 1.5),
+                                'Track classes, attendance & salary locally.',
+                                style: TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary, height: 1.4),
                               ),
                               const SizedBox(height: 14),
                               const Divider(color: AppColors.sheetBorder),
@@ -214,14 +214,14 @@ class SettingsScreen extends ConsumerWidget {
                         // ── Danger Zone Card ──────────────────────────────
                         _SheetSectionCard(
                           title: 'Danger Zone',
-                          subtitle: 'Permanent data options',
+                          subtitle: 'Clear data',
                           icon: Icons.warning_amber_rounded,
                           iconColor: AppColors.error,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Permanently deletes all students, cycles, and attendance records from local storage.',
+                                'Permanently clear all student records.',
                                 style: TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary, height: 1.4),
                               ),
                               const SizedBox(height: 16),
