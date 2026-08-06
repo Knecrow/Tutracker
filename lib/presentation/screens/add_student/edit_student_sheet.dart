@@ -5,6 +5,7 @@ import '../../../core/extensions/context_ext.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/color_tokens.dart';
 import '../../../core/haptics/haptic_service.dart';
+import '../../../data/models/student.dart';
 import '../../providers/student_provider.dart';
 import '../../providers/settings_provider.dart';
 
