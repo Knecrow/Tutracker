@@ -52,17 +52,10 @@ class AnalyticsScreen extends ConsumerWidget {
                         Row(
                           children: [
                             _HeaderStatChip(
-                              label: 'Lifetime',
+                              label: 'Lifetime Earnings',
                               value: '$sym${analytics.lifetimeEarnings.toStringAsFixed(0)}',
                               icon: Icons.trending_up_rounded,
                               color: AppColors.darkAccentGreen,
-                            ),
-                            const SizedBox(width: 10),
-                            _HeaderStatChip(
-                              label: 'This Month',
-                              value: '${analytics.totalClassesThisMonth} ${analytics.totalClassesThisMonth == 1 ? 'class' : 'classes'}',
-                              icon: Icons.calendar_month_rounded,
-                              color: AppColors.darkAccentBlue,
                             ),
                           ],
                         ),
