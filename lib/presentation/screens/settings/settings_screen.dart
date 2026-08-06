@@ -71,7 +71,7 @@ class SettingsScreen extends ConsumerWidget {
                             const SizedBox(width: 12),
                             _HeaderStatChip(
                               label: 'Version',
-                              value: 'v1.1.0',
+                              value: 'v1.6.0',
                               icon: Icons.info_outline_rounded,
                               color: AppColors.darkAccentBlue,
                             ),
@@ -197,7 +197,7 @@ class SettingsScreen extends ConsumerWidget {
                               const SizedBox(height: 14),
                               const Divider(color: AppColors.sheetBorder),
                               const SizedBox(height: 10),
-                              _InfoRow(label: 'Version', value: '1.1.0'),
+                              _InfoRow(label: 'Version', value: '1.6.0'),
                               const SizedBox(height: 8),
                               _InfoRow(label: 'Storage', value: 'Hive (Local)'),
                               const SizedBox(height: 8),
@@ -297,18 +297,24 @@ class _HeaderStatChip extends StatelessWidget {
               child: Icon(icon, size: 18, color: color),
             ),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(fontSize: 11, color: AppColors.headerTextSecondary, fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  value,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.headerTextPrimary),
-                ),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 11, color: AppColors.headerTextSecondary, fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.headerTextPrimary),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -363,26 +369,32 @@ class _SheetSectionCard extends StatelessWidget {
                 child: Icon(icon, size: 16, color: iconColor),
               ),
               const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.sheetTextPrimary,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.sheetTextPrimary,
+                      ),
                     ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: AppColors.sheetTextSecondary,
-                      fontWeight: FontWeight.w500,
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.sheetTextSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),

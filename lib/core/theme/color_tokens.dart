@@ -9,15 +9,15 @@ class AppColors {
   static const Color headerSurface    = Color(0xFF1E324F); // Steel Card Surface
   static const Color headerBorder     = Color(0xFF2B4468); // Soft Steel Border
   static const Color headerTextPrimary= Color(0xFFFFFFFF); // Pure White Header Text
-  static const Color headerTextSecondary = Color(0xFF94A3B8); // Slate Header Text
+  static const Color headerTextSecondary = Color(0xFFCBD5E1); // Slate Header Text (High Contrast)
 
   // ── Curved Icy Sheet Section (Bottom Main Area) ────────────────────────────
   static const Color sheetBackgroundStart = Color(0xFFEAF2F8); // Icy Blue Gradient Top
   static const Color sheetBackgroundEnd   = Color(0xFFD8E5F2); // Icy Blue Gradient Bottom
   static const Color sheetSurface         = Color(0xFFF5F9FD); // Clean List Card Surface
   static const Color sheetBorder          = Color(0xFFD2E0F0); // Delicate Sheet Border
-  static const Color sheetTextPrimary     = Color(0xFF1E293B); // Deep Navy Slate Text
-  static const Color sheetTextSecondary   = Color(0xFF64748B); // Muted Slate Text
+  static const Color sheetTextPrimary     = Color(0xFF0F172A); // Deep Slate Navy Primary Text
+  static const Color sheetTextSecondary   = Color(0xFF475569); // Slate-600 High Contrast Secondary Text
 
   // ── Global Standard Surface Colors (Backwards compatibility) ───────────────
   static const Color darkBackground   = Color(0xFF14243B);
