@@ -259,18 +259,13 @@ class _HistoryCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDarkCard = ThemeData.estimateBrightnessForColor(color) == Brightness.dark;
-    final fgPrimary = isDarkCard ? Colors.white : const Color(0xFF0F172A);
-    final fgSecondary = isDarkCard ? Colors.white.withValues(alpha: 0.85) : const Color(0xFF334155);
-    final overlayBg = isDarkCard ? Colors.white.withValues(alpha: 0.22) : const Color(0xFF0F172A).withValues(alpha: 0.12);
-    final overlayBorder = isDarkCard ? Colors.white.withValues(alpha: 0.35) : const Color(0xFF0F172A).withValues(alpha: 0.20);
-
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color,
+        color: AppColors.sheetSurface,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.sheetBorder, width: 1),
       ),
       child: Row(
         children: [
@@ -280,8 +275,8 @@ class _HistoryCard extends ConsumerWidget {
             height: 46,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: overlayBg,
-              border: Border.all(color: fgPrimary, width: 2),
+              color: color.withValues(alpha: 0.14),
+              border: Border.all(color: color, width: 2),
             ),
             child: Center(
               child: Text(
@@ -289,7 +284,7 @@ class _HistoryCard extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: fgPrimary,
+                  color: color,
                 ),
               ),
             ),
@@ -305,10 +300,10 @@ class _HistoryCard extends ConsumerWidget {
                   name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    color: fgPrimary,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.sheetTextPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -316,25 +311,24 @@ class _HistoryCard extends ConsumerWidget {
                   endDate != null ? '${startDate.monthLabel} → ${endDate!.monthLabel}' : startDate.monthLabel,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: fgSecondary,
+                    color: AppColors.sheetTextSecondary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.fact_check_rounded, size: 12, color: fgSecondary),
+                    const Icon(Icons.fact_check_rounded, size: 12, color: AppColors.sheetTextSecondary),
                     const SizedBox(width: 4),
                     Text(
                       '$attendedCount classes',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: fgSecondary,
+                        color: AppColors.sheetTextSecondary,
                       ),
                     ),
                   ],
@@ -353,9 +347,8 @@ class _HistoryCard extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: overlayBg,
+                    color: isPaid ? AppColors.darkAccentGreen.withValues(alpha: 0.16) : AppColors.sheetBorder.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: overlayBorder, width: 1),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -363,15 +356,15 @@ class _HistoryCard extends ConsumerWidget {
                       Icon(
                         isPaid ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
                         size: 13,
-                        color: fgPrimary,
+                        color: isPaid ? AppColors.darkAccentGreen : AppColors.sheetTextSecondary,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         isPaid ? 'Paid' : 'Pending',
                         style: TextStyle(
                           fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          color: fgPrimary,
+                          fontWeight: FontWeight.w700,
+                          color: isPaid ? AppColors.darkAccentGreen : AppColors.sheetTextSecondary,
                         ),
                       ),
                     ],
@@ -381,10 +374,10 @@ class _HistoryCard extends ConsumerWidget {
               const SizedBox(height: 8),
               Text(
                 '$currencySymbol${totalEarned.toStringAsFixed(0)}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  color: fgPrimary,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.sheetTextPrimary,
                 ),
               ),
             ],
