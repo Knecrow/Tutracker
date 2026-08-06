@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/color_tokens.dart';
 import '../../../core/haptics/haptic_service.dart';
 import '../../providers/settings_provider.dart';
@@ -171,6 +172,100 @@ class SettingsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 16),
 
+                         // ── Creator & Developer Card ────────────────────────
+                        _SheetSectionCard(
+                          title: 'Creator & Developer',
+                          subtitle: 'Crafted with ❤️',
+                          icon: Icons.code_rounded,
+                          iconColor: const Color(0xFF2563EB),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: AppColors.getMetallicGradient(const Color(0xFFD4AF37)),
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        'K',
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 14),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: const [
+                                        Text(
+                                          'Knecrow',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800,
+                                            color: AppColors.sheetTextPrimary,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          'Creator & Lead Developer of TuTracker',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color: AppColors.sheetTextSecondary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 14),
+                              GestureDetector(
+                                onTap: () async {
+                                  HapticService.medium();
+                                  final uri = Uri.parse('https://github.com/Knecrow');
+                                  if (await canLaunchUrl(uri)) {
+                                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                  }
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF0F172A),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Row(
+                                    children: const [
+                                      Icon(Icons.code_rounded, size: 18, color: Colors.white),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        'github.com/Knecrow',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Icon(Icons.open_in_new_rounded, size: 15, color: Colors.white70),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
                         // ── About TuTracker Card ──────────────────────────
                         _SheetSectionCard(
                           title: 'About TuTracker',
@@ -183,6 +278,12 @@ class SettingsScreen extends ConsumerWidget {
                               _InfoRow(label: 'Version', value: '1.6.0'),
                               const SizedBox(height: 8),
                               _InfoRow(label: 'Storage', value: 'Hive (Local)'),
+                              const SizedBox(height: 8),
+                              _InfoRow(
+                                label: 'Creator',
+                                value: 'Knecrow',
+                                valueColor: AppColors.sheetTextPrimary,
+                              ),
                               const SizedBox(height: 8),
                               _InfoRow(
                                 label: 'Lifetime Earnings',
