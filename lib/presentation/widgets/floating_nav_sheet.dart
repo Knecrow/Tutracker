@@ -73,6 +73,7 @@ class _FloatingNavBar extends StatelessWidget {
 
     return Container(
       height: 64,
+      clipBehavior: Clip.none,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: AppColors.headerBackground, // Deep Steel Blue capsule
@@ -93,24 +94,20 @@ class _FloatingNavBar extends StatelessWidget {
           _NavItem(icon: AppShell._icons[0], label: AppShell._labels[0], selected: selectedIndex == 0, onTap: () => onTap(0)),
           _NavItem(icon: AppShell._icons[1], label: AppShell._labels[1], selected: selectedIndex == 1, onTap: () => onTap(1)),
 
-          // ── Center FAB ──────────────────────────────────────────────────
-          GestureDetector(
-            onTap: onAdd,
-            child: Container(
-              width: 46,
-              height: 46,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: AppColors.orangeGradient,
-                boxShadow: [
-                  BoxShadow(
-                    color: orangeAccent.withValues(alpha: 0.4),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+          // ── Center FAB (Popping Out of Pill, Clean & NO Glow) ───────────
+          Transform.translate(
+            offset: const Offset(0, -12),
+            child: GestureDetector(
+              onTap: onAdd,
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: AppColors.orangeGradient,
+                ),
+                child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
               ),
-              child: const Icon(Icons.add_rounded, color: Colors.white, size: 24),
             ),
           ),
 
