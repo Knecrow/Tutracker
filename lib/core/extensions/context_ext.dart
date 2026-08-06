@@ -8,24 +8,15 @@ extension BuildContextExtensions on BuildContext {
   AppThemeExtension get themeExt =>
       Theme.of(this).extension<AppThemeExtension>()!;
 
-  Color get background =>
-      isDark ? AppColors.darkBackground : AppColors.lightBackground;
-  Color get surface =>
-      isDark ? AppColors.darkSurface : AppColors.lightSurface;
-  Color get elevated =>
-      isDark ? AppColors.darkElevated : AppColors.lightElevated;
-  Color get borderColor =>
-      isDark ? AppColors.darkBorder : AppColors.lightBorder;
-  Color get primaryText =>
-      isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-  Color get secondaryText =>
-      isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
-  Color get accent =>
-      isDark ? AppColors.darkAccent : AppColors.lightAccent;
-  Color get accentGreen =>
-      isDark ? AppColors.darkAccentGreen : AppColors.lightAccentGreen;
-  Color get accentBlue =>
-      isDark ? AppColors.darkAccentBlue : AppColors.lightAccentBlue;
+  Color get background => AppColors.headerBackground;
+  Color get surface => AppColors.sheetSurface;
+  Color get elevated => AppColors.sheetBorder.withValues(alpha: 0.5);
+  Color get borderColor => AppColors.sheetBorder;
+  Color get primaryText => AppColors.sheetTextPrimary; // 0xFF0F172A Deep Navy Slate Text
+  Color get secondaryText => AppColors.sheetTextSecondary; // 0xFF334155 Slate-700 High Contrast Text
+  Color get accent => AppColors.darkAccent;
+  Color get accentGreen => AppColors.darkAccentGreen;
+  Color get accentBlue => AppColors.darkAccentBlue;
 
   double get screenWidth => MediaQuery.of(this).size.width;
   double get screenHeight => MediaQuery.of(this).size.height;

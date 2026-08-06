@@ -17,7 +17,7 @@ class AppColors {
   static const Color sheetSurface         = Color(0xFFF5F9FD); // Clean List Card Surface
   static const Color sheetBorder          = Color(0xFFD2E0F0); // Delicate Sheet Border
   static const Color sheetTextPrimary     = Color(0xFF0F172A); // Deep Slate Navy Primary Text
-  static const Color sheetTextSecondary   = Color(0xFF475569); // Slate-600 High Contrast Secondary Text
+  static const Color sheetTextSecondary   = Color(0xFF334155); // Slate-700 High Contrast Secondary Text
 
   // ── Global Standard Surface Colors (Backwards compatibility) ───────────────
   static const Color darkBackground   = Color(0xFF14243B);
