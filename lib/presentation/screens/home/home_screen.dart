@@ -51,7 +51,7 @@ class HomeScreen extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'TuTracker Overview',
+                                    'TuTracker',
                                     style: TextStyle(
                                       fontSize: 26,
                                       fontWeight: FontWeight.w900,
