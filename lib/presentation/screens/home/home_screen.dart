@@ -666,32 +666,36 @@ class _ActionRow extends ConsumerWidget {
           const SizedBox(height: 8),
         ],
 
-        // Secondary actions (Delete & Edit, or Delete, Edit, Cycle)
+        // Action row buttons (Delete, Edit, Cycle) evenly spaced
         Row(
           children: [
-            Tooltip(
-              message: 'Delete student',
-              child: _ActionBtn(
-                icon: Icons.delete_outline_rounded,
-                color: const Color(0xFFEF4444),
-                onTap: () => showDialog(
-                  context: context,
-                  builder: (_) => DeleteStudentDialog(studentId: student.id, studentName: student.name),
+            Expanded(
+              child: Tooltip(
+                message: 'Delete student',
+                child: _ActionBtn(
+                  icon: Icons.delete_outline_rounded,
+                  color: const Color(0xFFEF4444),
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (_) => DeleteStudentDialog(studentId: student.id, studentName: student.name),
+                  ),
                 ),
               ),
             ),
             const SizedBox(width: 8),
-            Tooltip(
-              message: 'Edit student',
-              child: _ActionBtn(
-                icon: Icons.edit_outlined,
-                color: const Color(0xFFFF8C00),
-                onTap: () => context.push('/edit-student/${student.id}'),
+            Expanded(
+              child: Tooltip(
+                message: 'Edit student',
+                child: _ActionBtn(
+                  icon: Icons.edit_outlined,
+                  color: const Color(0xFFFF8C00),
+                  onTap: () => context.push('/edit-student/${student.id}'),
+                ),
               ),
             ),
-            if (!isCompleted) ...[
-              const SizedBox(width: 8),
-              Tooltip(
+            const SizedBox(width: 8),
+            Expanded(
+              child: Tooltip(
                 message: 'Start new cycle',
                 child: _ActionBtn(
                   icon: Icons.refresh_rounded,
@@ -708,7 +712,7 @@ class _ActionRow extends ConsumerWidget {
                   ),
                 ),
               ),
-            ],
+            ),
           ],
         ),
       ],
@@ -724,15 +728,15 @@ class _ActionBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.16),
-            borderRadius: BorderRadius.circular(14),
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.16),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Center(
           child: Icon(icon, size: 20, color: color),
         ),
       ),
