@@ -416,18 +416,16 @@ class _AttendanceGrid extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 240),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const BouncingScrollPhysics(),
-            itemCount: targetClasses,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
-              mainAxisExtent: 46,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-            ),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: targetClasses,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 1,
+            mainAxisExtent: 46,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+          ),
             itemBuilder: (context, i) {
               final isChecked = i < slotStates.length && slotStates[i];
               final ts = timestamps.where((t) => t.endsWith('|$i')).lastOrNull;
@@ -525,9 +523,8 @@ class _AttendanceGrid extends ConsumerWidget {
               );
             },
           ),
-        ),
-      ],
-    );
+        ],
+      );
   }
 
   Future<void> _pickDate(BuildContext context, WidgetRef ref, int index, List<bool> slotStates) async {
