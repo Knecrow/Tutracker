@@ -48,16 +48,9 @@ class AnalyticsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 20),
 
-                        // ── Summary Cards (Steel Blue Cards) ──────────────
+                        // ── Summary Cards ──────────────────────────────────
                         Row(
                           children: [
-                            _HeaderStatChip(
-                              label: 'Pending',
-                              value: '$sym${analytics.totalPendingEarnings.toStringAsFixed(0)}',
-                              icon: Icons.account_balance_wallet_rounded,
-                              color: AppColors.avatarPalette[0],
-                            ),
-                            const SizedBox(width: 10),
                             _HeaderStatChip(
                               label: 'Lifetime',
                               value: '$sym${analytics.lifetimeEarnings.toStringAsFixed(0)}',
