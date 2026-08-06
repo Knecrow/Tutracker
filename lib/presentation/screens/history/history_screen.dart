@@ -266,13 +266,6 @@ class _HistoryCard extends ConsumerWidget {
         color: AppColors.sheetSurface,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: AppColors.sheetBorder, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Row(
         children: [

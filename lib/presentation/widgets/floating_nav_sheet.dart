@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/extensions/context_ext.dart';
 import '../../core/theme/color_tokens.dart';
 import '../../core/haptics/haptic_service.dart';
 
@@ -69,16 +68,15 @@ class _FloatingNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const orangeAccent = Color(0xFFFF9800); // Samsung One UI Warm Amber
     final bottomPad = MediaQuery.of(context).padding.bottom;
 
     return Container(
-      height: 64 + bottomPad,
+      height: 68 + bottomPad,
       clipBehavior: Clip.none,
       padding: EdgeInsets.only(bottom: bottomPad, left: 16, right: 16, top: 4),
       decoration: const BoxDecoration(
-        color: AppColors.headerBackground, // Deep Steel Blue Nav Bar matching header
-        borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
+        color: AppColors.headerBackground, // Deep Steel Blue nav bar
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)), // Smooth Top Curved Corners
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -89,7 +87,7 @@ class _FloatingNavBar extends StatelessWidget {
 
           // ── Center FAB (Popping Out of Nav Bar, Clean & NO Glow) ───────────
           Transform.translate(
-            offset: const Offset(0, -14),
+            offset: const Offset(0, -16),
             child: GestureDetector(
               onTap: onAdd,
               child: Container(
@@ -134,19 +132,19 @@ class _NavItem extends StatelessWidget {
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeOut,
-              width: 44,
-              height: 30,
+              width: 48,
+              height: 32,
               decoration: BoxDecoration(
                 color: selected ? orangeAccent.withValues(alpha: 0.2) : Colors.transparent,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(icon, size: 20, color: selected ? orangeAccent : AppColors.headerTextSecondary),
+              child: Icon(icon, size: 22, color: selected ? orangeAccent : AppColors.headerTextSecondary),
             ),
             const SizedBox(height: 3),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),
               style: TextStyle(
-                fontSize: 11,
+                fontSize: 11.5,
                 fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
                 color: selected ? orangeAccent : AppColors.headerTextSecondary,
               ),

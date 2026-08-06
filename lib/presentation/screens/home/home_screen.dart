@@ -249,13 +249,6 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
             color: AppColors.sheetSurface,
             borderRadius: BorderRadius.circular(22),
             border: Border.all(color: AppColors.sheetBorder, width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,13 +325,6 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                         decoration: BoxDecoration(
                           color: color,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: color.withValues(alpha: 0.35),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
