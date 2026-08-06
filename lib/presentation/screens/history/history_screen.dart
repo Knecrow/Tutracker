@@ -263,9 +263,8 @@ class _HistoryCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.28), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: color.withValues(alpha: 0.06),
