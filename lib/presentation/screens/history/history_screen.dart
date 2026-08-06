@@ -259,11 +259,13 @@ class _HistoryCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final solidBg = Color.alphaBlend(color.withValues(alpha: 0.16), AppColors.sheetSurface);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: solidBg,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(

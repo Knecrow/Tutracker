@@ -234,6 +234,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
     final perSession = total > 0 ? student.monthlyFee / total : 0.0;
     final earned = perSession * attended;
 
+    final solidBg = Color.alphaBlend(color.withValues(alpha: 0.16), AppColors.sheetSurface);
+
     return AnimatedScale(
       scale: _isPressed ? 0.98 : 1.0,
       duration: const Duration(milliseconds: 140),
@@ -246,7 +248,7 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
         child: Container(
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.12),
+            color: solidBg,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
