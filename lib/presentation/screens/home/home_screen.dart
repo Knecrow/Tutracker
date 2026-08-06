@@ -433,8 +433,11 @@ class _AttendanceGrid extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 10),
-        Column(
-          children: List.generate(targetClasses, (i) {
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 240),
+          child: SingleChildScrollView(
+            child: Column(
+              children: List.generate(targetClasses, (i) {
             final isChecked = i < slotStates.length && slotStates[i];
             final ts = timestamps.where((t) => t.endsWith('|$i')).lastOrNull;
             final iso = ts?.split('|').first;
@@ -532,6 +535,8 @@ class _AttendanceGrid extends ConsumerWidget {
               ),
             );
           }),
+            ),
+          ),
         ),
       ],
     );
@@ -559,7 +564,7 @@ class _AttendanceGrid extends ConsumerWidget {
 // ── Action Row ─────────────────────────────────────────────────────────────────
 class _ActionRow extends ConsumerWidget {
   const _ActionRow({required this.student, required this.attended, required this.earned, required this.accentColor});
-  final student;
+  final Student student;
   final int attended;
   final double earned;
   final Color accentColor;
