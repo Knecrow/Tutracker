@@ -444,12 +444,7 @@ class _AttendanceGrid extends ConsumerWidget {
                       ? accentColor.withValues(alpha: 0.14)
                       : AppColors.sheetSurface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isChecked
-                        ? accentColor.withValues(alpha: 0.35)
-                        : AppColors.sheetBorder,
-                    width: 1,
-                  ),
+                  border: isChecked ? null : Border.all(color: AppColors.sheetBorder, width: 1),
                 ),
                 child: Row(
                   children: [
@@ -474,12 +469,7 @@ class _AttendanceGrid extends ConsumerWidget {
                               ? accentColor.withValues(alpha: 0.18)
                               : AppColors.sheetBorder.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: isChecked
-                                ? accentColor.withValues(alpha: 0.4)
-                                : AppColors.sheetBorder,
-                            width: 1,
-                          ),
+                          border: isChecked ? null : Border.all(color: AppColors.sheetBorder, width: 1),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
