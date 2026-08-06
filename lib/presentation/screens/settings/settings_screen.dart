@@ -174,19 +174,12 @@ class SettingsScreen extends ConsumerWidget {
                         // ── About TuTracker Card ──────────────────────────
                         _SheetSectionCard(
                           title: 'About TuTracker',
-                          subtitle: 'Tuition organizer',
+                          subtitle: '',
                           icon: Icons.auto_awesome_rounded,
                           iconColor: AppColors.darkAccentGreen,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Track classes, attendance & salary locally.',
-                                style: TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary, height: 1.4),
-                              ),
-                              const SizedBox(height: 14),
-                              const Divider(color: AppColors.sheetBorder),
-                              const SizedBox(height: 10),
                               _InfoRow(label: 'Version', value: '1.6.0'),
                               const SizedBox(height: 8),
                               _InfoRow(label: 'Storage', value: 'Hive (Local)'),
@@ -204,38 +197,28 @@ class SettingsScreen extends ConsumerWidget {
                         // ── Danger Zone Card ──────────────────────────────
                         _SheetSectionCard(
                           title: 'Danger Zone',
-                          subtitle: 'Clear data',
+                          subtitle: '',
                           icon: Icons.warning_amber_rounded,
                           iconColor: AppColors.error,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Permanently clear all student records.',
-                                style: TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary, height: 1.4),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.error,
+                                foregroundColor: Colors.white,
+                                minimumSize: const Size(double.infinity, 46),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                elevation: 0,
                               ),
-                              const SizedBox(height: 16),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.error,
-                                    foregroundColor: Colors.white,
-                                    minimumSize: const Size(double.infinity, 46),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                                    elevation: 0,
-                                  ),
-                                  onPressed: () => showDialog(
-                                    context: context,
-                                    builder: (dc) => _ConfirmResetDialog(notifier: notifier, dialogContext: dc),
-                                  ),
-                                  child: const Text(
-                                    'Reset All Data',
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-                                  ),
-                                ),
+                              onPressed: () => showDialog(
+                                context: context,
+                                builder: (dc) => _ConfirmResetDialog(notifier: notifier, dialogContext: dc),
                               ),
-                            ],
+                              child: const Text(
+                                'Reset All Data',
+                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -360,30 +343,15 @@ class _SheetSectionCard extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.sheetTextPrimary,
-                      ),
-                    ),
-                    Text(
-                      subtitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 10.5,
-                        color: AppColors.sheetTextSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.sheetTextPrimary,
+                  ),
                 ),
               ),
             ],
