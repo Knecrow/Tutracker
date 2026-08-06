@@ -416,62 +416,6 @@ class _AttendanceGrid extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Text(
-                  'ATTENDANCE LOG',
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
-                    color: AppColors.sheetTextSecondary,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: isCompleted
-                        ? const Color(0xFF10B981).withValues(alpha: 0.16)
-                        : accentColor.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    '$attendedCount / $targetClasses',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      color: isCompleted ? const Color(0xFF10B981) : accentColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            if (!isCompleted)
-              GestureDetector(
-                onTap: () => notifier.markAllAttended(targetClasses),
-                child: Text(
-                  'Mark all',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: accentColor),
-                ),
-              )
-            else
-              Row(
-                children: const [
-                  Icon(Icons.check_circle_rounded, size: 14, color: Color(0xFF10B981)),
-                  SizedBox(width: 4),
-                  Text(
-                    'Completed',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF10B981)),
-                  ),
-                ],
-              ),
-          ],
-        ),
-        const SizedBox(height: 12),
         ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 240),
           child: GridView.builder(
