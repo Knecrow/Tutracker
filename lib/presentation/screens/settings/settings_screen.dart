@@ -284,12 +284,6 @@ class SettingsScreen extends ConsumerWidget {
                                 value: 'Knecrow',
                                 valueColor: AppColors.sheetTextPrimary,
                               ),
-                              const SizedBox(height: 8),
-                              _InfoRow(
-                                label: 'Lifetime Earnings',
-                                value: '${settings.currencySymbol}${analytics.lifetimeEarnings.toStringAsFixed(0)}',
-                                valueColor: AppColors.darkAccentGreen,
-                              ),
                             ],
                           ),
                         ),
