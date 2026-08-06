@@ -53,7 +53,7 @@ class SettingsScreen extends ConsumerWidget {
                         Row(
                           children: [
                             _HeaderStatChip(
-                              label: 'Active Currency',
+                              label: 'Currency',
                               value: settings.currencySymbol,
                               icon: Icons.monetization_on_rounded,
                               color: AppColors.avatarPalette[0],

@@ -70,14 +70,14 @@ class HomeScreen extends ConsumerWidget {
                         Row(
                           children: [
                             _StatChip(
-                              label: 'Active Students',
+                              label: 'Students',
                               value: '${students.length}',
                               icon: Icons.people_alt_rounded,
                               color: AppColors.avatarPalette[0],
                             ),
                             const SizedBox(width: 12),
                             _StatChip(
-                              label: 'Pending Fees',
+                              label: 'Pending',
                               value: '${settings.currencySymbol}${analytics.totalPendingEarnings.toStringAsFixed(0)}',
                               icon: Icons.account_balance_wallet_rounded,
                               color: AppColors.avatarPalette[1],
