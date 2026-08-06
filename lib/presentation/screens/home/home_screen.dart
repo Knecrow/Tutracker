@@ -248,12 +248,12 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
         child: Container(
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
-            color: solidBg,
+            color: color,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: color.withValues(alpha: 0.06),
-                blurRadius: 10,
+                color: color.withValues(alpha: 0.35),
+                blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
             ],
@@ -274,16 +274,16 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                         height: 46,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: color.withValues(alpha: 0.18),
-                          border: Border.all(color: color, width: 2),
+                          color: Colors.white.withValues(alpha: 0.22),
+                          border: Border.all(color: Colors.white, width: 2),
                         ),
                         child: Center(
                           child: Text(
                             student.name[0].toUpperCase(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w800,
-                              color: color,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -300,8 +300,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.sheetTextPrimary,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 2),
@@ -311,7 +311,11 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                                   : '${settings.currencySymbol}${student.monthlyFee.toStringAsFixed(0)}/mo',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 12, color: AppColors.sheetTextSecondary),
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white.withValues(alpha: 0.85),
+                              ),
                             ),
                             const SizedBox(height: 6),
                             ClipRRect(
@@ -319,8 +323,8 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                               child: LinearProgressIndicator(
                                 value: progress,
                                 minHeight: 4,
-                                backgroundColor: AppColors.sheetBorder,
-                                valueColor: AlwaysStoppedAnimation(color),
+                                backgroundColor: Colors.white.withValues(alpha: 0.25),
+                                valueColor: const AlwaysStoppedAnimation(Colors.white),
                               ),
                             ),
                           ],
@@ -332,8 +336,9 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
-                          color: color,
+                          color: Colors.white.withValues(alpha: 0.22),
                           borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.35), width: 1),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -375,7 +380,7 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Divider(height: 1, color: context.borderColor),
+                      Divider(height: 1, color: Colors.white.withValues(alpha: 0.20)),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
                         child: _AttendanceGrid(
@@ -444,13 +449,11 @@ class _AttendanceGrid extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
                   color: isChecked
-                      ? accentColor.withValues(alpha: 0.14)
-                      : AppColors.sheetSurface,
+                      ? Colors.white.withValues(alpha: 0.26)
+                      : Colors.white.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isChecked
-                        ? accentColor.withValues(alpha: 0.35)
-                        : AppColors.sheetBorder,
+                    color: Colors.white.withValues(alpha: 0.30),
                     width: 1,
                   ),
                 ),
@@ -461,8 +464,8 @@ class _AttendanceGrid extends ConsumerWidget {
                       'Class ${i + 1}',
                       style: TextStyle(
                         fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: isChecked ? AppColors.sheetTextPrimary : AppColors.sheetTextSecondary,
+                        fontWeight: isChecked ? FontWeight.w800 : FontWeight.w600,
+                        color: Colors.white,
                       ),
                     ),
                     const Spacer(),
@@ -473,33 +476,29 @@ class _AttendanceGrid extends ConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                         decoration: BoxDecoration(
-                          color: isChecked
-                              ? accentColor.withValues(alpha: 0.18)
-                              : AppColors.sheetBorder.withValues(alpha: 0.35),
+                          color: Colors.white.withValues(alpha: 0.20),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: isChecked
-                                ? accentColor.withValues(alpha: 0.4)
-                                : AppColors.sheetBorder,
+                            color: Colors.white.withValues(alpha: 0.35),
                             width: 1,
                           ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.calendar_month_rounded,
                               size: 15,
-                              color: isChecked ? accentColor : AppColors.sheetTextSecondary,
+                              color: Colors.white,
                             ),
                             if (isChecked && dt != null) ...[
                               const SizedBox(width: 5),
                               Text(
                                 DateFormat('d MMM').format(dt),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: accentColor,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -512,10 +511,10 @@ class _AttendanceGrid extends ConsumerWidget {
                     // Toggle switch (ON = Mark today, OFF = Unmark)
                     Switch.adaptive(
                       value: isChecked,
-                      activeThumbColor: accentColor,
-                      activeTrackColor: accentColor.withValues(alpha: 0.3),
-                      inactiveTrackColor: Colors.grey.withValues(alpha: 0.4),
-                      inactiveThumbColor: Colors.white,
+                      activeThumbColor: Colors.white,
+                      activeTrackColor: Colors.white.withValues(alpha: 0.5),
+                      inactiveTrackColor: Colors.black.withValues(alpha: 0.2),
+                      inactiveThumbColor: Colors.white.withValues(alpha: 0.8),
                       trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       onChanged: (val) {
@@ -682,11 +681,12 @@ class _ActionBtn extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.16),
+          color: Colors.white.withValues(alpha: 0.22),
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.35), width: 1),
         ),
         child: Center(
-          child: Icon(icon, size: 20, color: color),
+          child: Icon(icon, size: 20, color: Colors.white),
         ),
       ),
     );
