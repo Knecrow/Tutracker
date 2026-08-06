@@ -79,14 +79,14 @@ class _AddStudentSheetState extends ConsumerState<AddStudentSheet> {
                       height: 36,
                       margin: const EdgeInsets.only(right: 8),
                       decoration: BoxDecoration(
-                        color: palette[i],
+                        gradient: AppColors.getMetallicGradient(palette[i]),
                         shape: BoxShape.circle,
                         border: _selectedColorIndex == i
-                            ? Border.all(color: context.primaryText, width: 2.5)
-                            : Border.all(color: Colors.transparent, width: 2.5),
+                            ? Border.all(color: Colors.white, width: 2.5)
+                            : null,
                       ),
                       child: _selectedColorIndex == i
-                          ? const Icon(Icons.check_rounded, size: 16, color: Colors.white)
+                          ? const Icon(Icons.check_rounded, size: 18, color: Colors.white)
                           : null,
                     ),
                   ),

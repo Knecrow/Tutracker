@@ -247,20 +247,17 @@ class _EditStudentSheetState extends ConsumerState<EditStudentSheet> {
                                 width: 44,
                                 height: 44,
                                 decoration: BoxDecoration(
-                                  color: color.withValues(alpha: 0.2),
+                                  gradient: AppColors.getMetallicGradient(color),
                                   shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? color
-                                        : color.withValues(alpha: 0.4),
-                                    width: isSelected ? 3.0 : 1.5,
-                                  ),
+                                  border: isSelected
+                                      ? Border.all(color: Colors.white, width: 2.5)
+                                      : null,
                                 ),
                                 child: isSelected
-                                    ? Center(
+                                    ? const Center(
                                         child: Icon(
                                           Icons.check_rounded,
-                                          color: color,
+                                          color: Colors.white,
                                           size: 20,
                                         ),
                                       )
