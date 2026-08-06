@@ -490,92 +490,93 @@ class _AttendanceGrid extends ConsumerWidget {
               final iso = ts?.split('|').first;
               final dt = iso != null ? DateTime.tryParse(iso) : null;
 
-              return InkWell(
-                onTap: () {
-                  if (isChecked) {
-                    notifier.toggleSlot(i);
-                  } else {
-                    notifier.toggleSlot(i, selectedDate: DateTime.now());
-                  }
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isChecked
+                      ? accentColor.withValues(alpha: 0.14)
+                      : AppColors.sheetSurface,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
                     color: isChecked
-                        ? accentColor.withValues(alpha: 0.16)
-                        : AppColors.sheetSurface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isChecked
-                          ? accentColor.withValues(alpha: 0.45)
-                          : AppColors.sheetBorder,
-                      width: 1,
-                    ),
+                        ? accentColor.withValues(alpha: 0.35)
+                        : AppColors.sheetBorder,
+                    width: 1,
                   ),
-                  child: Row(
-                    children: [
-                      // Slot index badge
-                      Container(
-                        width: 22,
-                        height: 22,
+                ),
+                child: Row(
+                  children: [
+                    // Class label (Class 1, Class 2...)
+                    Text(
+                      'Class ${i + 1}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: isChecked ? AppColors.sheetTextPrimary : AppColors.sheetTextSecondary,
+                      ),
+                    ),
+                    const Spacer(),
+
+                    // Calendar date select (Left of toggle)
+                    GestureDetector(
+                      onTap: () => _pickDate(context, ref, i, slotStates),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
                           color: isChecked
-                              ? accentColor.withValues(alpha: 0.25)
-                              : AppColors.sheetBorder.withValues(alpha: 0.5),
+                              ? accentColor.withValues(alpha: 0.18)
+                              : AppColors.sheetBorder.withValues(alpha: 0.35),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isChecked
+                                ? accentColor.withValues(alpha: 0.4)
+                                : AppColors.sheetBorder,
+                            width: 1,
+                          ),
                         ),
-                        child: Center(
-                          child: Text(
-                            '${i + 1}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.calendar_month_rounded,
+                              size: 15,
                               color: isChecked ? accentColor : AppColors.sheetTextSecondary,
                             ),
-                          ),
+                            if (isChecked && dt != null) ...[
+                              const SizedBox(width: 5),
+                              Text(
+                                DateFormat('d MMM').format(dt),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  color: accentColor,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
-                      const SizedBox(width: 8),
+                    ),
+                    const SizedBox(width: 10),
 
-                      // Class date or state
-                      Expanded(
-                        child: Text(
-                          isChecked
-                              ? (dt != null ? DateFormat('d MMM').format(dt) : 'Done')
-                              : 'Class ${i + 1}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: isChecked ? FontWeight.w700 : FontWeight.w500,
-                            color: isChecked ? AppColors.sheetTextPrimary : AppColors.sheetTextSecondary,
-                          ),
-                        ),
-                      ),
-
-                      // Calendar button when checked, or checkmark indicator
-                      if (isChecked)
-                        GestureDetector(
-                          onTap: () => _pickDate(context, ref, i, slotStates),
-                          child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: Icon(
-                              Icons.calendar_month_rounded,
-                              size: 16,
-                              color: accentColor,
-                            ),
-                          ),
-                        )
-                      else
-                        Icon(
-                          Icons.add_circle_outline_rounded,
-                          size: 16,
-                          color: AppColors.sheetTextSecondary.withValues(alpha: 0.6),
-                        ),
-                    ],
-                  ),
+                    // Toggle switch (ON = Mark today, OFF = Unmark)
+                    Switch.adaptive(
+                      value: isChecked,
+                      activeThumbColor: accentColor,
+                      activeTrackColor: accentColor.withValues(alpha: 0.3),
+                      inactiveTrackColor: Colors.grey.withValues(alpha: 0.4),
+                      inactiveThumbColor: Colors.white,
+                      trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      onChanged: (val) {
+                        if (val) {
+                          notifier.toggleSlot(i, selectedDate: DateTime.now());
+                        } else {
+                          notifier.toggleSlot(i);
+                        }
+                      },
+                    ),
+                  ],
                 ),
               );
             },
