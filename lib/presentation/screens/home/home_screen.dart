@@ -325,7 +325,7 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
                           color: color,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(14),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
