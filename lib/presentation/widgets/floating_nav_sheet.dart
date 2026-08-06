@@ -30,18 +30,27 @@ class AppShell extends StatelessWidget {
     final selectedIndex = _indexFromLocation(location);
 
     return Scaffold(
-      backgroundColor: context.background,
-      body: child,
-      bottomNavigationBar: _FloatingNavBar(
-        selectedIndex: selectedIndex,
-        onTap: (i) {
-          HapticService.light();
-          context.go(_routes[i]);
-        },
-        onAdd: () {
-          HapticService.medium();
-          context.push('/add-student');
-        },
+      backgroundColor: AppColors.headerBackground,
+      body: Stack(
+        children: [
+          child,
+          Positioned(
+            left: 20,
+            right: 20,
+            bottom: MediaQuery.of(context).padding.bottom + 12,
+            child: _FloatingNavBar(
+              selectedIndex: selectedIndex,
+              onTap: (i) {
+                HapticService.light();
+                context.go(_routes[i]);
+              },
+              onAdd: () {
+                HapticService.medium();
+                context.push('/add-student');
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -60,22 +69,20 @@ class _FloatingNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDark;
     const orangeAccent = Color(0xFFFF9800); // Samsung One UI Warm Amber
-    final navBg = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-    final bottomPad = MediaQuery.of(context).padding.bottom;
 
     return Container(
-      height: 72 + bottomPad,
-      padding: EdgeInsets.only(bottom: bottomPad, left: 16, right: 16, top: 4),
+      height: 64,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: navBg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(26)),
+        color: AppColors.headerBackground, // Deep Steel Blue capsule
+        borderRadius: BorderRadius.circular(32), // Fully rounded floating pill
+        border: Border.all(color: AppColors.headerBorder, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.06),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -86,24 +93,24 @@ class _FloatingNavBar extends StatelessWidget {
           _NavItem(icon: AppShell._icons[0], label: AppShell._labels[0], selected: selectedIndex == 0, onTap: () => onTap(0)),
           _NavItem(icon: AppShell._icons[1], label: AppShell._labels[1], selected: selectedIndex == 1, onTap: () => onTap(1)),
 
-          // ── Samsung One UI Center FAB ────────────────────────────────────
+          // ── Center FAB ──────────────────────────────────────────────────
           GestureDetector(
             onTap: onAdd,
             child: Container(
-              width: 52,
-              height: 52,
+              width: 46,
+              height: 46,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: AppColors.orangeGradient,
                 boxShadow: [
                   BoxShadow(
-                    color: orangeAccent.withValues(alpha: isDark ? 0.45 : 0.3),
-                    blurRadius: 14,
+                    color: orangeAccent.withValues(alpha: 0.4),
+                    blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
                 ],
               ),
-              child: const Icon(Icons.add_rounded, color: Colors.white, size: 26),
+              child: const Icon(Icons.add_rounded, color: Colors.white, size: 24),
             ),
           ),
 
@@ -130,28 +137,28 @@ class _NavItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
-        width: 64,
+        width: 58,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeOut,
-              width: 44,
-              height: 30,
+              width: 42,
+              height: 28,
               decoration: BoxDecoration(
-                color: selected ? orangeAccent.withValues(alpha: 0.18) : Colors.transparent,
+                color: selected ? orangeAccent.withValues(alpha: 0.2) : Colors.transparent,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(icon, size: 20, color: selected ? orangeAccent : context.secondaryText),
+              child: Icon(icon, size: 19, color: selected ? orangeAccent : AppColors.headerTextSecondary),
             ),
-            const SizedBox(height: 3),
+            const SizedBox(height: 2),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),
               style: TextStyle(
-                fontSize: 11,
-                fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
-                color: selected ? orangeAccent : context.secondaryText,
+                fontSize: 10,
+                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                color: selected ? orangeAccent : AppColors.headerTextSecondary,
               ),
               child: Text(label),
             ),
