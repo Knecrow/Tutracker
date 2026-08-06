@@ -67,7 +67,7 @@ class AnalyticsScreen extends ConsumerWidget {
                             const SizedBox(width: 10),
                             _HeaderStatChip(
                               label: 'This Month',
-                              value: '${analytics.totalClassesThisMonth} cls',
+                              value: '${analytics.totalClassesThisMonth} ${analytics.totalClassesThisMonth == 1 ? 'class' : 'classes'}',
                               icon: Icons.calendar_month_rounded,
                               color: AppColors.darkAccentBlue,
                             ),
