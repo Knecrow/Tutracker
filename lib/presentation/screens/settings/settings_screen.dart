@@ -265,18 +265,12 @@ class SettingsScreen extends ConsumerWidget {
                           subtitle: '',
                           icon: Icons.auto_awesome_rounded,
                           iconColor: AppColors.darkAccentGreen,
-                          child: Column(
+                          child: const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _InfoRow(label: 'Version', value: '1.6.0'),
-                              const SizedBox(height: 8),
+                              SizedBox(height: 8),
                               _InfoRow(label: 'Storage', value: 'Hive (Local)'),
-                              const SizedBox(height: 8),
-                              _InfoRow(
-                                label: 'Creator',
-                                value: 'Knecrow',
-                                valueColor: AppColors.sheetTextPrimary,
-                              ),
                             ],
                           ),
                         ),

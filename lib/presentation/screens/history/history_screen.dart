@@ -156,6 +156,8 @@ class HistoryScreen extends ConsumerWidget {
                                   totalEarned: cycle.totalEarned ?? 0,
                                   isPaid: cycle.isPaid,
                                   currencySymbol: sym,
+                                  archivedTimestamps: cycle.archivedTimestamps ?? [],
+                                  archivedSlotStates: cycle.archivedSlotStates ?? [],
                                 );
                               },
                             ),
@@ -241,7 +243,7 @@ class _HeaderStatChip extends StatelessWidget {
 }
 
 // ── History Tile Card (Matches HomeScreen _StudentTile Design) ───────────────
-class _HistoryCard extends ConsumerWidget {
+class _HistoryCard extends ConsumerStatefulWidget {
   const _HistoryCard({
     required this.cycleId,
     required this.name,
@@ -252,6 +254,8 @@ class _HistoryCard extends ConsumerWidget {
     required this.totalEarned,
     required this.isPaid,
     required this.currencySymbol,
+    required this.archivedTimestamps,
+    required this.archivedSlotStates,
   });
 
   final String cycleId;
@@ -263,135 +267,258 @@ class _HistoryCard extends ConsumerWidget {
   final double totalEarned;
   final bool isPaid;
   final String currencySymbol;
+  final List<String> archivedTimestamps;
+  final List<bool> archivedSlotStates;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_HistoryCard> createState() => _HistoryCardState();
+}
+
+class _HistoryCardState extends ConsumerState<_HistoryCard> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.sheetSurface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.sheetBorder, width: 1),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Circular Metallic Avatar
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: AppColors.getMetallicGradient(color),
-            ),
-            child: Center(
-              child: Text(
-                name.isNotEmpty ? name[0].toUpperCase() : '?',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 14),
-
-          // Name & Date range
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.sheetTextPrimary,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  endDate != null ? '${startDate.monthLabel} → ${endDate!.monthLabel}' : startDate.monthLabel,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.sheetTextSecondary,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.fact_check_rounded, size: 12, color: AppColors.sheetTextSecondary),
-                    const SizedBox(width: 4),
-                    Text(
-                      '$attendedCount classes',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.sheetTextSecondary,
+          GestureDetector(
+            onTap: () => setState(() => _expanded = !_expanded),
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  // Circular Metallic Avatar
+                  Container(
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: AppColors.getMetallicGradient(widget.color),
+                    ),
+                    child: Center(
+                      child: Text(
+                        widget.name.isNotEmpty ? widget.name[0].toUpperCase() : '?',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-
-          // Paid badge & Amount
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              GestureDetector(
-                onTap: () => ref.read(allArchivedCyclesProvider.notifier).togglePaidStatus(cycleId),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: isPaid ? AppColors.darkAccentGreen.withValues(alpha: 0.16) : AppColors.sheetBorder.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  const SizedBox(width: 14),
+
+                  // Name & Date range
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.sheetTextPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          widget.endDate != null
+                              ? '${widget.startDate.monthLabel} → ${widget.endDate!.monthLabel}'
+                              : widget.startDate.monthLabel,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.sheetTextSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.fact_check_rounded, size: 12, color: AppColors.sheetTextSecondary),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${widget.attendedCount} classes',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.sheetTextSecondary,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            AnimatedRotation(
+                              turns: _expanded ? 0.5 : 0.0,
+                              duration: const Duration(milliseconds: 220),
+                              curve: Curves.easeOutCubic,
+                              child: const Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                size: 16,
+                                color: AppColors.sheetTextSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+
+                  // Paid badge & Amount
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Icon(
-                        isPaid ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
-                        size: 13,
-                        color: isPaid ? AppColors.darkAccentGreen : AppColors.sheetTextSecondary,
+                      GestureDetector(
+                        onTap: () => ref.read(allArchivedCyclesProvider.notifier).togglePaidStatus(widget.cycleId),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: widget.isPaid
+                                ? AppColors.darkAccentGreen.withValues(alpha: 0.16)
+                                : AppColors.sheetBorder.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                widget.isPaid ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
+                                size: 13,
+                                color: widget.isPaid ? AppColors.darkAccentGreen : AppColors.sheetTextSecondary,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                widget.isPaid ? 'Paid' : 'Pending',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  color: widget.isPaid ? AppColors.darkAccentGreen : AppColors.sheetTextSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(height: 8),
                       Text(
-                        isPaid ? 'Paid' : 'Pending',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: isPaid ? AppColors.darkAccentGreen : AppColors.sheetTextSecondary,
+                        '${widget.currencySymbol}${widget.totalEarned.toStringAsFixed(0)}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.sheetTextPrimary,
                         ),
                       ),
                     ],
                   ),
-                ),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                '$currencySymbol${totalEarned.toStringAsFixed(0)}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.sheetTextPrimary,
-                ),
-              ),
-            ],
+            ),
+          ),
+
+          // ── Expanded Archived Sessions Detail Panel ──
+          AnimatedSize(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            alignment: Alignment.topCenter,
+            clipBehavior: Clip.hardEdge,
+            child: _expanded
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Divider(height: 1, color: AppColors.sheetBorder),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Archived Session Details',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.sheetTextPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            if (widget.archivedTimestamps.isEmpty)
+                              const Text(
+                                'No specific session dates logged for this cycle.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.sheetTextSecondary,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              )
+                            else
+                              ...widget.archivedTimestamps.map((ts) {
+                                final parts = ts.split('|');
+                                final iso = parts.first;
+                                final slotIdx = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
+                                final dt = DateTime.tryParse(iso);
+                                final formattedDate = dt != null
+                                    ? '${dt.day} ${_monthName(dt.month)} ${dt.year}'
+                                    : iso;
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 6),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: widget.color.withValues(alpha: 0.10),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.event_available_rounded, size: 14, color: widget.color),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Class ${slotIdx + 1}',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.sheetTextPrimary,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        formattedDate,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.sheetTextSecondary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
           ),
         ],
       ),
     );
   }
+}
+
+String _monthName(int month) {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return month >= 1 && month <= 12 ? months[month - 1] : '';
 }
 
 // ── Empty History State ──────────────────────────────────────────────────────
