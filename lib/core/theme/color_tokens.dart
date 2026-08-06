@@ -72,14 +72,17 @@ class AppColors {
   static const Color warning  = Color(0xFFF59E0B);
   static const Color error    = Color(0xFFEF4444);
 
-  // ── Student Color Palette (Vibrant Accent Pills & Rings) ───────────────────
+  // ── Student Color Palette (10 Distinct High-Contrast Colors) ──────────────
   static const List<Color> avatarPalette = [
-    Color(0xFFF59E0B), // Warm Gold (Pay Now Pill color)
-    Color(0xFF3B82F6), // Vibrant Ocean Blue
-    Color(0xFF10B981), // Vibrant Emerald
-    Color(0xFF8B5CF6), // Royal Purple
-    Color(0xFFEC4899), // Hot Pink
-    Color(0xFF06B6D4), // Cyan Blue
-    Color(0xFFF97316), // Mango Orange
+    Color(0xFF2563EB), // 1. Royal Blue
+    Color(0xFF10B981), // 2. Emerald Green
+    Color(0xFFF59E0B), // 3. Amber Gold
+    Color(0xFF7C3AED), // 4. Violet Purple
+    Color(0xFFE11D48), // 5. Crimson Rose
+    Color(0xFF06B6D4), // 6. Electric Cyan
+    Color(0xFFEA580C), // 7. Sunset Orange
+    Color(0xFF4F46E5), // 8. Deep Indigo
+    Color(0xFF65A30D), // 9. Apple Lime
+    Color(0xFFC026D3), // 10. Berry Magenta
   ];
 }
