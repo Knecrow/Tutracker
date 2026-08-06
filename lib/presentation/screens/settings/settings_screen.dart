@@ -50,18 +50,11 @@ class SettingsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 20),
 
-                        // ── Summary Cards (Steel Blue Cards) ──────────────
+                        // ── Summary Cards ──────────────────────────────────
                         Row(
                           children: [
                             _HeaderStatChip(
-                              label: 'Currency',
-                              value: settings.currencySymbol,
-                              icon: Icons.monetization_on_rounded,
-                              color: AppColors.avatarPalette[0],
-                            ),
-                            const SizedBox(width: 12),
-                            _HeaderStatChip(
-                              label: 'Version',
+                              label: 'App Version',
                               value: 'v1.6.0',
                               icon: Icons.info_outline_rounded,
                               color: AppColors.darkAccentBlue,
