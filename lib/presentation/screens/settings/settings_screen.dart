@@ -39,16 +39,6 @@ class SettingsScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'APP PREFERENCES',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.headerTextSecondary,
-                            letterSpacing: 1.1,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
                           'Settings',
                           style: TextStyle(
                             fontSize: 26,

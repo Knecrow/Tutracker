@@ -38,16 +38,6 @@ class AnalyticsScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'YOUR TEACHING ANALYTICS',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.headerTextSecondary,
-                            letterSpacing: 1.1,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
                           'Insights Overview',
                           style: TextStyle(
                             fontSize: 26,

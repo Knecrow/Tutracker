@@ -51,15 +51,6 @@ class HomeScreen extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Welcome Back!',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.headerTextSecondary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
                                     'TuTracker Overview',
                                     style: TextStyle(
                                       fontSize: 26,

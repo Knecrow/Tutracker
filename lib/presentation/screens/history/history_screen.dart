@@ -58,16 +58,6 @@ class HistoryScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'BILLING ARCHIVE',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.headerTextSecondary,
-                            letterSpacing: 1.1,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
                           'Cycle History',
                           style: TextStyle(
                             fontSize: 26,
