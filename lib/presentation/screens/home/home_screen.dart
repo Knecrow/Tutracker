@@ -267,13 +267,6 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: AppColors.getMetallicGradient(color),
-                          boxShadow: [
-                            BoxShadow(
-                              color: color.withValues(alpha: 0.30),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
                         ),
                         child: Center(
                           child: Text(
@@ -335,13 +328,6 @@ class _StudentTileState extends ConsumerState<_StudentTile> {
                         decoration: BoxDecoration(
                           gradient: AppColors.getMetallicGradient(color),
                           borderRadius: BorderRadius.circular(14),
-                          boxShadow: [
-                            BoxShadow(
-                              color: color.withValues(alpha: 0.28),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,

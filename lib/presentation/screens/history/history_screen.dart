@@ -276,13 +276,6 @@ class _HistoryCard extends ConsumerWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: AppColors.getMetallicGradient(color),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withValues(alpha: 0.30),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
             ),
             child: Center(
               child: Text(
