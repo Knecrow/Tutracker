@@ -613,7 +613,7 @@ class _ActionRow extends ConsumerWidget {
           const SizedBox(height: 8),
         ],
 
-        // Action row buttons (Delete, Edit, Cycle) evenly spaced
+        // Action row buttons (Delete, Edit, Cycle) evenly spaced with distinct solid colors
         Row(
           children: [
             Expanded(
@@ -621,7 +621,7 @@ class _ActionRow extends ConsumerWidget {
                 message: 'Delete student',
                 child: _ActionBtn(
                   icon: Icons.delete_outline_rounded,
-                  color: accentColor,
+                  color: const Color(0xFFEF4444),
                   onTap: () => showDialog(
                     context: context,
                     builder: (_) => DeleteStudentDialog(studentId: student.id, studentName: student.name),
@@ -635,7 +635,7 @@ class _ActionRow extends ConsumerWidget {
                 message: 'Edit student',
                 child: _ActionBtn(
                   icon: Icons.edit_outlined,
-                  color: accentColor,
+                  color: const Color(0xFFF59E0B),
                   onTap: () => context.push('/edit-student/${student.id}'),
                 ),
               ),
@@ -646,7 +646,7 @@ class _ActionRow extends ConsumerWidget {
                 message: 'Start new cycle',
                 child: _ActionBtn(
                   icon: Icons.refresh_rounded,
-                  color: accentColor,
+                  color: const Color(0xFF10B981),
                   onTap: () => showDialog(
                     context: context,
                     builder: (_) => CycleRolloverDialog(
@@ -680,11 +680,11 @@ class _ActionBtn extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.16),
+          color: color,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Center(
-          child: Icon(icon, size: 20, color: color),
+          child: Icon(icon, size: 20, color: Colors.white),
         ),
       ),
     );
