@@ -35,9 +35,9 @@ class AppShell extends StatelessWidget {
         children: [
           child,
           Positioned(
-            left: 20,
-            right: 20,
-            bottom: MediaQuery.of(context).padding.bottom + 12,
+            left: 0,
+            right: 0,
+            bottom: 0,
             child: _FloatingNavBar(
               selectedIndex: selectedIndex,
               onTap: (i) {
@@ -70,22 +70,15 @@ class _FloatingNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const orangeAccent = Color(0xFFFF9800); // Samsung One UI Warm Amber
+    final bottomPad = MediaQuery.of(context).padding.bottom;
 
     return Container(
-      height: 64,
+      height: 64 + bottomPad,
       clipBehavior: Clip.none,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: AppColors.headerBackground, // Deep Steel Blue capsule
-        borderRadius: BorderRadius.circular(32), // Fully rounded floating pill
-        border: Border.all(color: AppColors.headerBorder, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
+      padding: EdgeInsets.only(bottom: bottomPad, left: 16, right: 16, top: 4),
+      decoration: const BoxDecoration(
+        color: AppColors.headerBackground, // Deep Steel Blue Nav Bar matching header
+        borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -94,9 +87,9 @@ class _FloatingNavBar extends StatelessWidget {
           _NavItem(icon: AppShell._icons[0], label: AppShell._labels[0], selected: selectedIndex == 0, onTap: () => onTap(0)),
           _NavItem(icon: AppShell._icons[1], label: AppShell._labels[1], selected: selectedIndex == 1, onTap: () => onTap(1)),
 
-          // ── Center FAB (Popping Out of Pill, Clean & NO Glow) ───────────
+          // ── Center FAB (Popping Out of Nav Bar, Clean & NO Glow) ───────────
           Transform.translate(
-            offset: const Offset(0, -12),
+            offset: const Offset(0, -14),
             child: GestureDetector(
               onTap: onAdd,
               child: Container(
@@ -134,26 +127,26 @@ class _NavItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
-        width: 58,
+        width: 64,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeOut,
-              width: 42,
-              height: 28,
+              width: 44,
+              height: 30,
               decoration: BoxDecoration(
                 color: selected ? orangeAccent.withValues(alpha: 0.2) : Colors.transparent,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(icon, size: 19, color: selected ? orangeAccent : AppColors.headerTextSecondary),
+              child: Icon(icon, size: 20, color: selected ? orangeAccent : AppColors.headerTextSecondary),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 3),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),
               style: TextStyle(
-                fontSize: 10,
+                fontSize: 11,
                 fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
                 color: selected ? orangeAccent : AppColors.headerTextSecondary,
               ),
